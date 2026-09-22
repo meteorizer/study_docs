@@ -1,0 +1,1167 @@
+<!doctype html>
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Airflow 실무 개발자 매뉴얼</title><style>pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.hl .hll { background-color: #ffffcc }
+.hl { background: #f0f0f0; }
+.hl .c { color: #60A0B0; font-style: italic } /* Comment */
+.hl .err { border: 1px solid #F00 } /* Error */
+.hl .k { color: #007020; font-weight: bold } /* Keyword */
+.hl .o { color: #666 } /* Operator */
+.hl .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+.hl .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+.hl .cp { color: #007020 } /* Comment.Preproc */
+.hl .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+.hl .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+.hl .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+.hl .gd { color: #A00000 } /* Generic.Deleted */
+.hl .ge { font-style: italic } /* Generic.Emph */
+.hl .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.hl .gr { color: #F00 } /* Generic.Error */
+.hl .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.hl .gi { color: #00A000 } /* Generic.Inserted */
+.hl .go { color: #888 } /* Generic.Output */
+.hl .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+.hl .gs { font-weight: bold } /* Generic.Strong */
+.hl .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.hl .gt { color: #04D } /* Generic.Traceback */
+.hl .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+.hl .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+.hl .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+.hl .kp { color: #007020 } /* Keyword.Pseudo */
+.hl .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+.hl .kt { color: #902000 } /* Keyword.Type */
+.hl .m { color: #40A070 } /* Literal.Number */
+.hl .s { color: #4070A0 } /* Literal.String */
+.hl .na { color: #4070A0 } /* Name.Attribute */
+.hl .nb { color: #007020 } /* Name.Builtin */
+.hl .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+.hl .no { color: #60ADD5 } /* Name.Constant */
+.hl .nd { color: #555; font-weight: bold } /* Name.Decorator */
+.hl .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+.hl .ne { color: #007020 } /* Name.Exception */
+.hl .nf { color: #06287E } /* Name.Function */
+.hl .nl { color: #002070; font-weight: bold } /* Name.Label */
+.hl .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+.hl .nt { color: #062873; font-weight: bold } /* Name.Tag */
+.hl .nv { color: #BB60D5 } /* Name.Variable */
+.hl .ow { color: #007020; font-weight: bold } /* Operator.Word */
+.hl .w { color: #BBB } /* Text.Whitespace */
+.hl .mb { color: #40A070 } /* Literal.Number.Bin */
+.hl .mf { color: #40A070 } /* Literal.Number.Float */
+.hl .mh { color: #40A070 } /* Literal.Number.Hex */
+.hl .mi { color: #40A070 } /* Literal.Number.Integer */
+.hl .mo { color: #40A070 } /* Literal.Number.Oct */
+.hl .sa { color: #4070A0 } /* Literal.String.Affix */
+.hl .sb { color: #4070A0 } /* Literal.String.Backtick */
+.hl .sc { color: #4070A0 } /* Literal.String.Char */
+.hl .dl { color: #4070A0 } /* Literal.String.Delimiter */
+.hl .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+.hl .s2 { color: #4070A0 } /* Literal.String.Double */
+.hl .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+.hl .sh { color: #4070A0 } /* Literal.String.Heredoc */
+.hl .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+.hl .sx { color: #C65D09 } /* Literal.String.Other */
+.hl .sr { color: #235388 } /* Literal.String.Regex */
+.hl .s1 { color: #4070A0 } /* Literal.String.Single */
+.hl .ss { color: #517918 } /* Literal.String.Symbol */
+.hl .bp { color: #007020 } /* Name.Builtin.Pseudo */
+.hl .fm { color: #06287E } /* Name.Function.Magic */
+.hl .vc { color: #BB60D5 } /* Name.Variable.Class */
+.hl .vg { color: #BB60D5 } /* Name.Variable.Global */
+.hl .vi { color: #BB60D5 } /* Name.Variable.Instance */
+.hl .vm { color: #BB60D5 } /* Name.Variable.Magic */
+.hl .il { color: #40A070 } /* Literal.Number.Integer.Long */
+:root { --fg:#1f2328; --muted:#59636e; --line:#d1d9e0; --bg:#ffffff; --code:#f6f8fa; --accent:#0969da; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--fg);
+  font-family: "Pretendard", "Noto Sans CJK KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  font-size: 15px; line-height: 1.7; }
+main { max-width: 920px; margin: 0 auto; padding: 40px 24px 80px; }
+h1 { font-size: 30px; margin: 0 0 4px; }
+h1 + p { color: var(--muted); margin-top: 0; }
+h2 { font-size: 22px; margin: 48px 0 12px; padding-bottom: 6px; border-bottom: 2px solid var(--line); }
+h3 { font-size: 17px; margin: 32px 0 8px; }
+p, li { word-break: keep-all; }
+a { color: var(--accent); }
+code { font-family: "JetBrains Mono", "D2Coding", "Noto Sans Mono CJK KR", Menlo, Consolas, monospace; font-size: 0.88em; }
+p code, li code, td code { background: var(--code); padding: 1px 5px; border-radius: 4px; }
+table { border-collapse: collapse; width: 100%; margin: 12px 0 20px; font-size: 14px; }
+th, td { border: 1px solid var(--line); padding: 6px 10px; vertical-align: top; text-align: left; }
+th { background: var(--code); }
+blockquote { margin: 16px 0; padding: 8px 16px; border-left: 4px solid #d4a72c; background: #fff8c5; border-radius: 0 6px 6px 0; }
+blockquote p { margin: 4px 0; }
+.code { position: relative; margin: 14px 0 20px; border: 1px solid var(--line); border-radius: 8px; background: var(--code); overflow: hidden; }
+.code .lang { position: absolute; top: 0; right: 0; font: 11px/1 monospace; color: var(--muted); background: #eaeef2; padding: 4px 8px; border-bottom-left-radius: 6px; text-transform: uppercase; }
+.hl { background: transparent !important; }
+.hl pre { margin: 0; padding: 14px 16px; overflow-x: auto; font-size: 13px; line-height: 1.55; white-space: pre; }
+.mermaid-wrap { margin: 16px 0 20px; text-align: center; }
+@media print {
+  main { max-width: none; padding: 0; }
+  .hl pre { white-space: pre-wrap; word-break: break-all; font-size: 11.5px; }
+  blockquote, .mermaid-wrap, tr { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+}
+</style></head>
+<body><main><h1 id="airflow">Airflow 실무 개발자 매뉴얼</h1>
+<p>2026-09-22 · Imm</p>
+<h2 id="0">0. 이 문서에 대해</h2>
+<p>이 매뉴얼은 Airflow 3.3.x(2026-09 현재 최신 3.3.2)를 기준으로, 운영 중인 Airflow에 DAG를 올리고 장애를 직접 처리해야 하는 개발자를 위한 것입니다. 2.x 자료와 API가 크게 달라졌으므로, 검색으로 찾은 예제는 import 경로부터 의심하는 편이 안전합니다.</p>
+<ul>
+<li>기준 버전: Airflow 3.3.2 (2026-09-17 릴리스), Python 3.10\~3.14</li>
+<li>작성 원칙: 개념은 짧게, 코드와 설정은 실제로 붙여 쓸 수 있게</li>
+<li>읽는 순서: 1장(개념) → 2장(DAG 작성) → 4장(운용)을 먼저 보고, 설정·배포(3장)와 CI(5장)는 필요할 때 참조</li>
+</ul>
+<blockquote>
+<p>2.x 경험이 있다면: <code>from airflow import DAG</code> 대신 <code>from airflow.sdk import dag, task, Asset</code>를 쓰고, <code>execution_date</code>는 사라졌으며, 태스크는 메타 DB에 직접 접속할 수 없습니다. 이 세 가지만 기억해도 마이그레이션 사고의 대부분을 피합니다.</p>
+</blockquote>
+<h2 id="1">1. 기본 개념</h2>
+<p>Airflow는 "무엇을, 언제, 어떤 순서로 실행할지"를 파이썬 코드로 선언하는 오케스트레이터입니다. 데이터를 직접 처리하는 엔진이 아니며, 무거운 연산은 Spark·StarRocks 같은 외부 시스템에 위임하고 상태만 관리하는 것이 올바른 사용법입니다.</p>
+<h3 id="11">1.1 핵심 용어</h3>
+<table>
+<thead>
+<tr>
+<th>용어</th>
+<th>의미</th>
+<th>실무 포인트</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DAG</td>
+<td>태스크와 의존 관계로 이루어진 워크플로 정의</td>
+<td>파일 하나에 DAG 하나 권장. 파싱은 수십 초마다 반복됨</td>
+</tr>
+<tr>
+<td>Task</td>
+<td>DAG 안의 실행 단위</td>
+<td>재실행 가능(멱등)해야 함</td>
+</tr>
+<tr>
+<td>Operator</td>
+<td>태스크 템플릿(SparkSubmitOperator, SQLExecuteQueryOperator 등)</td>
+<td>로직은 가능한 한 기존 Operator/Hook로</td>
+</tr>
+<tr>
+<td>Hook</td>
+<td>외부 시스템 접속 추상화</td>
+<td>Connection을 읽어 클라이언트를 만듦</td>
+</tr>
+<tr>
+<td>DAG Run</td>
+<td>특정 시점에 대한 DAG 1회 실행</td>
+<td><code>run_id</code>, <code>logical_date</code>, <code>data_interval_start/end</code> 보유</td>
+</tr>
+<tr>
+<td>Task Instance(TI)</td>
+<td>DAG Run 안의 태스크 1회 실행</td>
+<td>상태: scheduled → queued → running → success/failed/up_for_retry/deferred</td>
+</tr>
+<tr>
+<td>Asset</td>
+<td>태스크가 생산·소비하는 데이터 논리 단위(구 Dataset)</td>
+<td>데이터 기반 스케줄링의 핵심. 3.2+ 파티션 지원</td>
+</tr>
+<tr>
+<td>XCom</td>
+<td>태스크 간 소량 데이터 전달</td>
+<td>메타 DB 저장. 경로·ID만 전달하고 데이터 본체는 금지</td>
+</tr>
+<tr>
+<td>Connection / Variable</td>
+<td>접속 정보 / 설정값</td>
+<td>시크릿 백엔드(Vault 등)로 관리</td>
+</tr>
+<tr>
+<td>Pool</td>
+<td>동시 실행 슬롯 제한</td>
+<td>외부 시스템 보호용(예: StarRocks 동시 쿼리)</td>
+</tr>
+<tr>
+<td>Dag Bundle</td>
+<td>DAG 코드 묶음과 버전(로컬 폴더, Git 등)</td>
+<td>3.x에서 DAG 버전 관리의 기반</td>
+</tr>
+</tbody>
+</table>
+<h3 id="12-airflow-3x">1.2 아키텍처 (Airflow 3.x)</h3>
+<div class="mermaid-wrap"><pre class="mermaid" data-processed="true"><svg id="mermaid-1790078474400" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="flowchart" style="max-width: 1005.515625px;" viewBox="0 0 1005.515625 346" role="graphics-document document" aria-roledescription="flowchart-v2"><style>#mermaid-1790078474400{font-family:Noto Sans CJK KR,sans-serif;font-size:16px;fill:#000000;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#mermaid-1790078474400 .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#mermaid-1790078474400 .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#mermaid-1790078474400 .error-icon{fill:#552222;}#mermaid-1790078474400 .error-text{fill:#552222;stroke:#552222;}#mermaid-1790078474400 .edge-thickness-normal{stroke-width:1px;}#mermaid-1790078474400 .edge-thickness-thick{stroke-width:3.5px;}#mermaid-1790078474400 .edge-pattern-solid{stroke-dasharray:0;}#mermaid-1790078474400 .edge-thickness-invisible{stroke-width:0;fill:none;}#mermaid-1790078474400 .edge-pattern-dashed{stroke-dasharray:3;}#mermaid-1790078474400 .edge-pattern-dotted{stroke-dasharray:2;}#mermaid-1790078474400 .marker{fill:#666;stroke:#666;}#mermaid-1790078474400 .marker.cross{stroke:#666;}#mermaid-1790078474400 svg{font-family:Noto Sans CJK KR,sans-serif;font-size:16px;}#mermaid-1790078474400 p{margin:0;}#mermaid-1790078474400 .label{font-family:Noto Sans CJK KR,sans-serif;color:#000000;}#mermaid-1790078474400 .cluster-label text{fill:#333;}#mermaid-1790078474400 .cluster-label span{color:#333;}#mermaid-1790078474400 .cluster-label span p{background-color:transparent;}#mermaid-1790078474400 .label text,#mermaid-1790078474400 span{fill:#000000;color:#000000;}#mermaid-1790078474400 .node rect,#mermaid-1790078474400 .node circle,#mermaid-1790078474400 .node ellipse,#mermaid-1790078474400 .node polygon,#mermaid-1790078474400 .node path{fill:#eee;stroke:#999;stroke-width:1px;}#mermaid-1790078474400 .rough-node .label text,#mermaid-1790078474400 .node .label text,#mermaid-1790078474400 .image-shape .label,#mermaid-1790078474400 .icon-shape .label{text-anchor:middle;}#mermaid-1790078474400 .node .katex path{fill:#000;stroke:#000;stroke-width:1px;}#mermaid-1790078474400 .rough-node .label,#mermaid-1790078474400 .node .label,#mermaid-1790078474400 .image-shape .label,#mermaid-1790078474400 .icon-shape .label{text-align:center;}#mermaid-1790078474400 .node.clickable{cursor:pointer;}#mermaid-1790078474400 .root .anchor path{fill:#666!important;stroke-width:0;stroke:#666;}#mermaid-1790078474400 .arrowheadPath{fill:#333333;}#mermaid-1790078474400 .edgePaths .path{stroke:#666;stroke-width:1px;}#mermaid-1790078474400 .flowchart-link{stroke:#666;fill:none;}#mermaid-1790078474400 .edgeLabel{background-color:white;text-align:center;}#mermaid-1790078474400 .edgeLabel p{background-color:white;}#mermaid-1790078474400 .edgeLabel rect{opacity:0.5;background-color:white;fill:white;}#mermaid-1790078474400 .labelBkg{background-color:rgba(255, 255, 255, 0.5);}#mermaid-1790078474400 .cluster rect{fill:hsl(0, 0%, 98.9215686275%);stroke:#707070;stroke-width:1px;}#mermaid-1790078474400 .cluster text{fill:#333;}#mermaid-1790078474400 .cluster span{color:#333;}#mermaid-1790078474400 .node .collapsed-indicator{fill:#707070;stroke:none;opacity:0.6;}#mermaid-1790078474400 .node .collapsed-separator{stroke:#707070;stroke-width:0.75px;}#mermaid-1790078474400 div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-family:Noto Sans CJK KR,sans-serif;font-size:12px;background:hsl(-160, 0%, 93.3333333333%);border:1px solid #707070;border-radius:2px;pointer-events:none;z-index:100;}#mermaid-1790078474400 .flowchartTitleText{text-anchor:middle;font-size:18px;fill:#000000;}#mermaid-1790078474400 rect.text{fill:none;stroke-width:0;}#mermaid-1790078474400 .icon-shape,#mermaid-1790078474400 .image-shape{background-color:white;text-align:center;}#mermaid-1790078474400 .icon-shape p,#mermaid-1790078474400 .image-shape p{background-color:white;padding:2px;}#mermaid-1790078474400 .icon-shape .label rect,#mermaid-1790078474400 .image-shape .label rect{opacity:0.5;background-color:white;fill:white;}#mermaid-1790078474400 .label-icon{display:inline-block;height:1em;overflow:visible;vertical-align:-0.125em;}#mermaid-1790078474400 .node .label-icon path{fill:currentColor;stroke:revert;stroke-width:revert;}#mermaid-1790078474400 .node .neo-node{stroke:#999;}#mermaid-1790078474400 [data-look="neo"].node rect,#mermaid-1790078474400 [data-look="neo"].cluster rect,#mermaid-1790078474400 [data-look="neo"].node polygon{stroke:url(#mermaid-1790078474400-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#mermaid-1790078474400 [data-look="neo"].swimlane.cluster rect{filter:none;}#mermaid-1790078474400 [data-look="neo"].node path{stroke:url(#mermaid-1790078474400-gradient);stroke-width:1px;}#mermaid-1790078474400 [data-look="neo"].node .outer-path{filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#mermaid-1790078474400 [data-look="neo"].node .neo-line path{stroke:#999;filter:none;}#mermaid-1790078474400 [data-look="neo"].node circle{stroke:url(#mermaid-1790078474400-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#mermaid-1790078474400 [data-look="neo"].node circle .state-start{fill:#000000;}#mermaid-1790078474400 [data-look="neo"].icon-shape .icon{fill:url(#mermaid-1790078474400-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#mermaid-1790078474400 [data-look="neo"].icon-shape .icon-neo path{stroke:url(#mermaid-1790078474400-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#mermaid-1790078474400 :root{--mermaid-font-family:Noto Sans CJK KR,sans-serif;}</style><g><marker id="mermaid-1790078474400_flowchart-v2-pointEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1790078474400_flowchart-v2-pointStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="4.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 5 L 10 10 L 10 0 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1790078474400_flowchart-v2-pointEnd-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="11.5" refY="7" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="14" orient="auto"><path d="M 0 0 L 11.5 7 L 0 14 z" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1790078474400_flowchart-v2-pointStart-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="1" refY="7" markerUnits="userSpaceOnUse" markerWidth="11.5" markerHeight="14" orient="auto"><polygon points="0,7 11.5,14 11.5,0" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></polygon></marker><marker id="mermaid-1790078474400_flowchart-v2-circleEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="11" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="mermaid-1790078474400_flowchart-v2-circleStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-1" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="mermaid-1790078474400_flowchart-v2-circleEnd-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refY="5" refX="12.25" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="mermaid-1790078474400_flowchart-v2-circleStart-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-2" refY="5" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="mermaid-1790078474400_flowchart-v2-crossEnd" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="12" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1790078474400_flowchart-v2-crossStart" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="-1" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1790078474400_flowchart-v2-crossEnd-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="17.7" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5;"></path></marker><marker id="mermaid-1790078474400_flowchart-v2-crossStart-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="-3.5" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5; stroke-dasharray: 1, 0;"></path></marker><g class="root"><g class="clusters"></g><g class="edgePaths"><path d="M515.359,47L528.043,47C540.727,47,566.094,47,590.794,47C615.495,47,639.529,47,651.546,47L663.563,47" id="mermaid-1790078474400-L_B_P_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_B_P_0" data-points="W3sieCI6NTE1LjM1OTM3NSwieSI6NDd9LHsieCI6NTkxLjQ2MDkzNzUsInkiOjQ3fSx7IngiOjY2Ny41NjI1LCJ5Ijo0N31d" data-look="classic" marker-end="url(#mermaid-1790078474400_flowchart-v2-pointEnd)"></path><path d="M836.828,47L840.995,47C845.161,47,853.495,47,864.748,57.224C876.001,67.448,890.173,87.895,897.259,98.119L904.346,108.343" id="mermaid-1790078474400-L_P_DB_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_P_DB_0" data-points="W3sieCI6ODM2LjgyODEyNSwieSI6NDd9LHsieCI6ODYxLjgyODEyNSwieSI6NDd9LHsieCI6OTA2LjYyNDE5NzA0MTY2NjIsInkiOjExMS42MzA3NDMzMTQyMDI4fV0=" data-look="classic" marker-end="url(#mermaid-1790078474400_flowchart-v2-pointEnd)"></path><path d="M147.175,129.518L150.734,128.098C154.294,126.679,161.412,123.839,179.554,122.42C197.695,121,226.859,121,256.023,121C285.188,121,314.352,121,345.337,121C376.323,121,409.13,121,450.454,121C491.779,121,541.62,121,593.329,121C645.039,121,698.617,121,743.678,121C788.74,121,825.284,121,847.117,122.64C868.95,124.28,876.073,127.56,879.634,129.2L883.195,130.84" id="mermaid-1790078474400-L_S_DB_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_S_DB_0" data-points="W3sieCI6MTQzLjQ1OTQ1OTQ1OTQ1OTQ1LCJ5IjoxMzF9LHsieCI6MTY4LjUzMTI1LCJ5IjoxMjF9LHsieCI6MjU2LjAyMzQzNzUsInkiOjEyMX0seyJ4IjozNDMuNTE1NjI1LCJ5IjoxMjF9LHsieCI6NDQxLjkzNzUsInkiOjEyMX0seyJ4Ijo1OTEuNDYwOTM3NSwieSI6MTIxfSx7IngiOjc1Mi4xOTUzMTI1LCJ5IjoxMjF9LHsieCI6ODYxLjgyODEyNSwieSI6MTIxfSx7IngiOjg4Ni44MjgxMjUsInkiOjEzMi41MTMwMjk5NDk0MzYwM31d" data-look="classic" marker-start="url(#mermaid-1790078474400_flowchart-v2-pointStart)" marker-end="url(#mermaid-1790078474400_flowchart-v2-pointEnd)"></path><path d="M143.459,185L147.638,186.667C151.817,188.333,160.174,191.667,167.853,193.333C175.531,195,182.531,195,186.031,195L189.531,195" id="mermaid-1790078474400-L_S_E_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_S_E_0" data-points="W3sieCI6MTQzLjQ1OTQ1OTQ1OTQ1OTQ1LCJ5IjoxODV9LHsieCI6MTY4LjUzMTI1LCJ5IjoxOTV9LHsieCI6MTkzLjUzMTI1LCJ5IjoxOTV9XQ==" data-look="classic" marker-end="url(#mermaid-1790078474400_flowchart-v2-pointEnd)"></path><path d="M318.516,195L322.682,195C326.849,195,335.182,195,344.337,195C353.492,195,363.469,195,368.457,195L373.445,195" id="mermaid-1790078474400-L_E_W_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_E_W_0" data-points="W3sieCI6MzE4LjUxNTYyNSwieSI6MTk1fSx7IngiOjM0My41MTU2MjUsInkiOjE5NX0seyJ4IjozNzcuNDQ1MzEyNSwieSI6MTk1fV0=" data-look="classic" marker-end="url(#mermaid-1790078474400_flowchart-v2-pointEnd)"></path><path d="M506.43,195L520.602,195C534.773,195,563.117,195,591.957,195C620.797,195,650.133,195,664.801,195L679.469,195" id="mermaid-1790078474400-L_W_A_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_W_A_0" data-points="W3sieCI6NTA2LjQyOTY4NzUsInkiOjE5NX0seyJ4Ijo1OTEuNDYwOTM3NSwieSI6MTk1fSx7IngiOjY4My40Njg3NSwieSI6MTk1fV0=" data-look="classic" marker-end="url(#mermaid-1790078474400_flowchart-v2-pointEnd)"></path><path d="M824.922,195L831.073,195C837.224,195,849.526,195,859.238,193.36C868.95,191.72,876.073,188.44,879.634,186.8L883.195,185.16" id="mermaid-1790078474400-L_A_DB_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_A_DB_0" data-points="W3sieCI6ODIwLjkyMTg3NSwieSI6MTk1fSx7IngiOjg2MS44MjgxMjUsInkiOjE5NX0seyJ4Ijo4ODYuODI4MTI1LCJ5IjoxODMuNDg2OTcwMDUwNTYzOTd9XQ==" data-look="classic" marker-start="url(#mermaid-1790078474400_flowchart-v2-pointStart)" marker-end="url(#mermaid-1790078474400_flowchart-v2-pointEnd)"></path><path d="M819.766,311L826.776,311C833.786,311,847.807,311,863.603,294.052C879.399,277.103,896.97,243.207,905.756,226.258L914.542,209.31" id="mermaid-1790078474400-L_T_DB_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_T_DB_0" data-points="W3sieCI6ODE1Ljc2NTYyNSwieSI6MzExfSx7IngiOjg2MS44MjgxMjUsInkiOjMxMX0seyJ4Ijo5MTYuMzgyMzgzMTQ3ODc1NCwieSI6MjA1Ljc1ODcyMjMzNjE1Mjc3fV0=" data-look="classic" marker-start="url(#mermaid-1790078474400_flowchart-v2-pointStart)" marker-end="url(#mermaid-1790078474400_flowchart-v2-pointEnd)"></path></g><g class="edgeLabels"><g class="edgeLabel"><g class="label" data-id="L_B_P_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_P_DB_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_S_DB_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_S_E_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_E_W_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(591.4609375, 195)"><g class="label" data-id="L_W_A_0" transform="translate(-51.1015625, -12)"><foreignObject width="102.203125" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"><p>Execution API</p></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_A_DB_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_T_DB_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g></g><g class="nodes"><g class="node default" id="mermaid-1790078474400-flowchart-B-0" data-look="classic" transform="translate(441.9375, 47)"><rect class="basic label-container" style="" x="-73.421875" y="-39" width="146.84375" height="78"></rect><g class="label" style="" transform="translate(-43.421875, -24)"><rect></rect><foreignObject width="86.84375" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="nodeLabel"><p>Dag Bundle<br>Git / 폴더</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1790078474400-flowchart-P-1" data-look="classic" transform="translate(752.1953125, 47)"><rect class="basic label-container" style="" x="-84.6328125" y="-27" width="169.265625" height="54"></rect><g class="label" style="" transform="translate(-54.6328125, -12)"><rect></rect><foreignObject width="109.265625" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="nodeLabel"><p>DAG Processor</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1790078474400-flowchart-DB-3" data-look="classic" transform="translate(942.171875, 158)"><path d="M0,11.740917528507026 a55.34375,11.740917528507026 0,0,0 110.6875,0 a55.34375,11.740917528507026 0,0,0 -110.6875,0 l0,74.74091752850703 a55.34375,11.740917528507026 0,0,0 110.6875,0 l0,-74.74091752850703" class="basic label-container outer-path" style="" transform="translate(-55.34375, -49.11137629276054)"></path><g class="label" style="" transform="translate(-47.84375, -14)"><rect></rect><foreignObject width="95.6875" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="nodeLabel"><p>Metadata DB<br>PostgreSQL</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1790078474400-flowchart-S-4" data-look="classic" transform="translate(75.765625, 158)"><rect class="basic label-container" style="" x="-67.765625" y="-27" width="135.53125" height="54"></rect><g class="label" style="" transform="translate(-37.765625, -12)"><rect></rect><foreignObject width="75.53125" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="nodeLabel"><p>Scheduler</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1790078474400-flowchart-E-7" data-look="classic" transform="translate(256.0234375, 195)"><rect class="basic label-container" style="" x="-62.4921875" y="-27" width="124.984375" height="54"></rect><g class="label" style="" transform="translate(-32.4921875, -12)"><rect></rect><foreignObject width="64.984375" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="nodeLabel"><p>Executor</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1790078474400-flowchart-W-9" data-look="classic" transform="translate(441.9375, 195)"><rect class="basic label-container" style="" x="-64.4921875" y="-39" width="128.984375" height="78"></rect><g class="label" style="" transform="translate(-34.4921875, -24)"><rect></rect><foreignObject width="68.984375" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="nodeLabel"><p>Worker<br>Task SDK</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1790078474400-flowchart-A-11" data-look="classic" transform="translate(752.1953125, 195)"><rect class="basic label-container" style="" x="-68.7265625" y="-39" width="137.453125" height="78"></rect><g class="label" style="" transform="translate(-38.7265625, -24)"><rect></rect><foreignObject width="77.453125" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="nodeLabel"><p>API Server<br>UI + REST</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1790078474400-flowchart-T-14" data-look="classic" transform="translate(752.1953125, 311)"><rect class="basic label-container" style="" x="-63.5703125" y="-27" width="127.140625" height="54"></rect><g class="label" style="" transform="translate(-33.5703125, -12)"><rect></rect><foreignObject width="67.140625" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="nodeLabel"><p>Triggerer</p></span></div></foreignObject></g></g></g></g></g><defs><filter id="mermaid-1790078474400-drop-shadow" height="130%" width="130%"><feDropShadow dx="4" dy="4" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"></feDropShadow></filter></defs><defs><filter id="mermaid-1790078474400-drop-shadow-small" height="150%" width="150%"><feDropShadow dx="2" dy="2" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"></feDropShadow></filter></defs><linearGradient id="mermaid-1790078474400-gradient" gradientUnits="objectBoundingBox" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="hsl(0, 0%, 83.3333333333%)" stop-opacity="1"></stop><stop offset="100%" stop-color="hsl(0, 0%, 88.9215686275%)" stop-opacity="1"></stop></linearGradient></svg></pre></div>
+<p>3.x의 가장 큰 변화는 워커가 메타 DB에 직접 붙지 않고 API Server의 Execution API를 경유한다는 점입니다. 따라서 태스크 코드에서 <code>settings.Session</code>이나 ORM 모델을 쓰던 2.x 코드는 동작하지 않습니다.</p>
+<table>
+<thead>
+<tr>
+<th>컴포넌트</th>
+<th>역할</th>
+<th>장애 시 증상</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>API Server</td>
+<td>UI, REST API v2, 워커용 Execution API</td>
+<td>UI 불통 + 태스크가 상태 보고 실패</td>
+</tr>
+<tr>
+<td>Scheduler</td>
+<td>DAG Run 생성, TI 스케줄링, Executor 호출</td>
+<td>새 실행이 생기지 않음</td>
+</tr>
+<tr>
+<td>DAG Processor</td>
+<td>DAG 파일 파싱·직렬화(3.x에서 별도 프로세스 필수)</td>
+<td>코드 변경이 반영 안 됨, Import Error</td>
+</tr>
+<tr>
+<td>Triggerer</td>
+<td>deferrable 태스크의 비동기 대기</td>
+<td>deferred 태스크가 타임아웃까지 멈춤</td>
+</tr>
+<tr>
+<td>Executor</td>
+<td>태스크를 실제 워커에 배분(Local/Celery/Kubernetes/Edge)</td>
+<td>queued에 머묾</td>
+</tr>
+<tr>
+<td>Metadata DB</td>
+<td>모든 상태 저장</td>
+<td>전체 정지. 운영은 PostgreSQL 권장</td>
+</tr>
+</tbody>
+</table>
+<h3 id="13-logical-date-data-interval">1.3 시간 개념: logical date와 data interval</h3>
+<p>가장 많이 헷갈리는 부분입니다. 일 배치 DAG의 <code>2026-09-21</code> 실행은 9월 21일 00:00\~22일 00:00 구간의 데이터를 처리하며, 실제 실행은 구간이 끝난 22일 00:00 이후입니다.</p>
+<ul>
+<li><code>data_interval_start</code> / <code>data_interval_end</code>: 처리할 데이터 구간. 쿼리 조건에는 항상 이 둘을 사용</li>
+<li><code>logical_date</code>: 구간을 대표하는 시각(구 <code>execution_date</code>). 수동 실행에서는 None일 수 있음</li>
+<li><code>run_after</code>: 실제로 실행 가능해지는 시각</li>
+<li>3.x 기본값: <code>catchup=False</code>, 기본 timetable은 <code>CronTriggerTimetable</code> 계열(구간 없이 트리거 시각만 가짐). 구간 기반 처리가 필요하면 <code>CronDataIntervalTimetable</code>을 명시하거나 설정을 확인할 것</li>
+</ul>
+<h3 id="14">1.4 스케줄링 방식 세 가지</h3>
+<ol>
+<li>시간 기반: cron 문자열 또는 timetable (<code>schedule="0 2 * * *"</code>)</li>
+<li>데이터 기반: Asset 갱신 이벤트로 트리거 (<code>schedule=[Asset("iceberg://...")]</code>)</li>
+<li>외부 트리거: REST API, <code>TriggerDagRunOperator</code>, 또는 <code>schedule=None</code> + 수동 실행</li>
+</ol>
+<h2 id="2-dag">2. DAG 작성 실무</h2>
+<p>좋은 DAG는 파싱이 빠르고, 재실행해도 결과가 같으며, 무거운 일은 밖에서 합니다. 아래 예시는 모두 Airflow 3.x <code>airflow.sdk</code> 기준입니다.</p>
+<h3 id="21-taskflow-api">2.1 기본 골격 (TaskFlow API)</h3>
+<div class="code"><div class="lang">python</div><div class="hl"><pre><span></span><span class="c1"># dags/sales_daily.py</span>
+<span class="c1"># 파일 하나 = DAG 하나. DAG Processor가 이 파일을 주기적으로(기본 30초 내외) 다시 import 한다.</span>
+<span class="c1"># 따라서 모듈 최상단에는 "정의"만 두고, 실제 I/O는 전부 태스크 함수 안에서 한다.</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pendulum</span>                      <span class="c1"># Airflow가 내부적으로 쓰는 timezone-aware datetime 라이브러리</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">timedelta</span>
+
+<span class="c1"># airflow.sdk: Airflow 3의 공식 DAG 작성 인터페이스. 2.x의 `from airflow import DAG`를 대체한다.</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">airflow.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">dag</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">Asset</span>
+<span class="c1"># 구간(data interval) 기반 cron 스케줄. 3.x 기본값은 구간이 없는 CronTriggerTimetable이므로,</span>
+<span class="c1"># "어제 하루치 데이터"처럼 구간이 필요하면 이 클래스를 명시한다.</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">airflow.timetables.interval</span><span class="w"> </span><span class="kn">import</span> <span class="n">CronDataIntervalTimetable</span>
+
+<span class="c1"># Asset: 이 DAG가 생산하는 데이터의 논리적 이름. URI는 식별자일 뿐 Airflow가 실제로 접속하지 않는다.</span>
+<span class="c1"># 다른 DAG가 schedule=[SALES_RAW]로 구독하면, 이 Asset이 갱신될 때 자동 실행된다.</span>
+<span class="n">SALES_RAW</span> <span class="o">=</span> <span class="n">Asset</span><span class="p">(</span><span class="s2">"s3://lake/raw/sales"</span><span class="p">)</span>
+
+<span class="c1"># default_args: DAG 안 모든 태스크에 공통 적용되는 기본값. 태스크에서 개별 지정하면 덮어쓴다.</span>
+<span class="n">default_args</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"owner"</span><span class="p">:</span> <span class="s2">"data-eng"</span><span class="p">,</span>                        <span class="c1"># UI 표시·알림 라우팅용 담당자</span>
+    <span class="s2">"retries"</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>                               <span class="c1"># 실패 시 최대 3회 재시도 (총 4회 실행)</span>
+    <span class="s2">"retry_delay"</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>        <span class="c1"># 첫 재시도까지 대기 시간</span>
+    <span class="s2">"retry_exponential_backoff"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>          <span class="c1"># 재시도마다 대기 시간을 지수적으로 늘림 (5분 → 10분 → 20분)</span>
+    <span class="s2">"max_retry_delay"</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">30</span><span class="p">),</span>   <span class="c1"># 지수 증가의 상한</span>
+    <span class="s2">"execution_timeout"</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>    <span class="c1"># 1시간 넘게 돌면 강제 실패 (행 걸린 태스크 방지)</span>
+<span class="p">}</span>
+
+<span class="nd">@dag</span><span class="p">(</span>
+    <span class="n">dag_id</span><span class="o">=</span><span class="s2">"sales_daily"</span><span class="p">,</span>                       <span class="c1"># UI·CLI에서 쓰는 고유 ID. 한번 정하면 바꾸지 않는다 (이력이 끊김)</span>
+    <span class="c1"># 매일 02:00(KST)에 "전날 00:00 ~ 당일 00:00" 구간을 처리하는 실행을 만든다</span>
+    <span class="n">schedule</span><span class="o">=</span><span class="n">CronDataIntervalTimetable</span><span class="p">(</span><span class="s2">"0 2 * * *"</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">"Asia/Seoul"</span><span class="p">),</span>
+    <span class="n">start_date</span><span class="o">=</span><span class="n">pendulum</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="s2">"Asia/Seoul"</span><span class="p">),</span>  <span class="c1"># 반드시 고정값. now() 금지</span>
+    <span class="n">catchup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>                              <span class="c1"># True면 start_date부터 밀린 구간을 전부 자동 실행한다</span>
+    <span class="n">max_active_runs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                          <span class="c1"># 이 DAG의 동시 실행 Run 수. 1이면 구간이 순서대로 처리됨</span>
+    <span class="n">default_args</span><span class="o">=</span><span class="n">default_args</span><span class="p">,</span>
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">"sales"</span><span class="p">,</span> <span class="s2">"daily"</span><span class="p">],</span>                    <span class="c1"># UI 필터용</span>
+    <span class="n">doc_md</span><span class="o">=</span><span class="s2">"""### sales_daily</span><span class="se">\n</span><span class="s2">원천 매출 → 정제 테이블. 담당: data-eng"""</span><span class="p">,</span>  <span class="c1"># UI의 DAG 설명 탭에 렌더링</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sales_daily</span><span class="p">():</span>
+
+    <span class="c1"># @task: 일반 파이썬 함수를 태스크로 만든다. 함수 이름이 task_id가 된다.</span>
+    <span class="nd">@task</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span><span class="n">data_interval_start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_interval_end</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="c1"># 인자 이름이 컨텍스트 키와 같으면 Airflow가 실행 시점에 값을 주입한다.</span>
+        <span class="c1"># data_interval_start = 처리할 구간의 시작 (예: 2026-09-21 00:00 KST)</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"s3://lake/raw/sales/dt=</span><span class="si">{</span><span class="n">data_interval_start</span><span class="si">:</span><span class="s2">%Y-%m-%d</span><span class="si">}</span><span class="s2">"</span>
+        <span class="c1"># ... 원천 시스템에서 읽어 path에 적재 ...</span>
+        <span class="c1"># 반환값은 XCom(메타 DB)에 저장되어 다음 태스크의 인자로 전달된다.</span>
+        <span class="c1"># 그러므로 데이터 자체가 아니라 "어디에 뒀는지"만 반환한다.</span>
+        <span class="k">return</span> <span class="n">path</span>
+
+    <span class="c1"># outlets: 이 태스크가 성공하면 SALES_RAW Asset 갱신 이벤트를 발행한다.</span>
+    <span class="nd">@task</span><span class="p">(</span><span class="n">outlets</span><span class="o">=</span><span class="p">[</span><span class="n">SALES_RAW</span><span class="p">])</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="c1"># 건수·스키마 검증. 문제가 있으면 예외를 던져 태스크를 실패시킨다</span>
+        <span class="c1"># (실패하면 outlets 이벤트도 발행되지 않으므로 하위 DAG가 오염 데이터를 읽지 않음).</span>
+        <span class="k">return</span> <span class="n">path</span>
+
+    <span class="c1"># 함수 호출 관계가 곧 의존성: extract → validate</span>
+    <span class="n">validate</span><span class="p">(</span><span class="n">extract</span><span class="p">())</span>
+
+<span class="c1"># 데코레이터로 정의한 DAG는 반드시 한 번 호출해야 등록된다. 빠뜨리면 UI에 나타나지 않는다.</span>
+<span class="n">sales_daily</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>요점은 세 가지입니다.</p>
+<ul>
+<li>모듈 최상단에서 DB 조회, API 호출, <code>Variable.get()</code> 같은 I/O를 하지 않습니다. 파일은 DAG Processor가 수십 초마다 다시 파싱합니다.</li>
+<li><code>start_date</code>는 고정값을 씁니다. <code>datetime.now()</code>는 금지입니다.</li>
+<li>태스크 반환값은 XCom으로 저장되므로 경로·ID·건수 정도만 반환합니다.</li>
+</ul>
+<h3 id="22-operator">2.2 전통 Operator와 혼용</h3>
+<div class="code"><div class="lang">python</div><div class="hl"><pre><span></span><span class="c1"># 3.x에서 Bash/Python/Empty 등 기본 Operator는 core에서 standard provider로 이동했다.</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">airflow.providers.standard.operators.bash</span><span class="w"> </span><span class="kn">import</span> <span class="n">BashOperator</span>
+<span class="c1"># SQL 실행 범용 Operator. conn_id의 conn_type(mysql, postgres ...)에 맞는 Hook을 자동으로 고른다.</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">airflow.providers.common.sql.operators.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLExecuteQueryOperator</span>
+
+<span class="n">merge</span> <span class="o">=</span> <span class="n">SQLExecuteQueryOperator</span><span class="p">(</span>
+    <span class="n">task_id</span><span class="o">=</span><span class="s2">"merge_to_mart"</span><span class="p">,</span>
+    <span class="n">conn_id</span><span class="o">=</span><span class="s2">"starrocks_default"</span><span class="p">,</span>          <span class="c1"># Connection ID. 접속 정보는 코드가 아니라 Connection에 둔다</span>
+    <span class="n">sql</span><span class="o">=</span><span class="s2">"sql/merge_sales.sql"</span><span class="p">,</span>            <span class="c1"># .sql로 끝나면 파일로 인식. DAG 파일 기준 상대 경로</span>
+                                          <span class="c1"># 파일 내용은 실행 직전에 Jinja 템플릿으로 렌더링된다</span>
+    <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">"target"</span><span class="p">:</span> <span class="s2">"mart.sales_daily"</span><span class="p">},</span>  <span class="c1"># 템플릿 안에서 {{ params.target }}으로 참조</span>
+    <span class="n">pool</span><span class="o">=</span><span class="s2">"starrocks_pool"</span><span class="p">,</span>                <span class="c1"># 이 Pool의 슬롯이 남아 있을 때만 실행 (DB 과부하 방지)</span>
+<span class="p">)</span>
+
+<span class="c1"># bash_command도 템플릿 필드다. {{ ds }} = 구간 시작일 'YYYY-MM-DD'</span>
+<span class="n">cleanup</span> <span class="o">=</span> <span class="n">BashOperator</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="s2">"cleanup"</span><span class="p">,</span> <span class="n">bash_command</span><span class="o">=</span><span class="s2">"echo {{ ds }}"</span><span class="p">)</span>
+
+<span class="c1"># &gt;&gt; 는 "왼쪽이 끝나면 오른쪽 실행". TaskFlow 태스크와 전통 Operator를 섞어 연결할 수 있다.</span>
+<span class="n">validate</span><span class="p">(</span><span class="n">extract</span><span class="p">())</span> <span class="o">&gt;&gt;</span> <span class="n">merge</span> <span class="o">&gt;&gt;</span> <span class="n">cleanup</span>
+</pre></div>
+</div>
+<p>SQL 파일 안에서는 Jinja로 구간을 참조합니다.</p>
+<div class="code"><div class="lang">sql</div><div class="hl"><pre><span></span><span class="c1">-- dags/sql/merge_sales.sql</span>
+<span class="c1">-- 이 파일은 실행 직전에 Jinja로 렌더링된다. {{ }} 안은 Airflow 컨텍스트 값.</span>
+<span class="c1">-- 렌더링 결과는 UI의 태스크 화면 &gt; Rendered Template에서 확인할 수 있다 (디버깅 시 필수).</span>
+
+<span class="c1">-- INSERT OVERWRITE: 해당 파티션을 통째로 교체 → 같은 구간을 몇 번 재실행해도 결과가 같다(멱등)</span>
+<span class="c1">-- ds_nodash 필터: 2026-09-21 → 20260921 (파티션 이름용)</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="n">OVERWRITE</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">params</span><span class="p">.</span><span class="n">target</span><span class="w"> </span><span class="err">}}</span><span class="w"> </span><span class="n">PARTITION</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="err">{{</span><span class="w"> </span><span class="n">data_interval_start</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">ds_nodash</span><span class="w"> </span><span class="err">}}</span><span class="p">)</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">iceberg_catalog</span><span class="p">.</span><span class="n">silver</span><span class="p">.</span><span class="n">sales</span>
+<span class="c1">-- 조건은 반드시 data interval로. CURRENT_DATE를 쓰면 재실행·백필 때 엉뚱한 날짜를 처리한다</span>
+<span class="c1">-- 시작은 포함(&gt;=), 끝은 제외(&lt;) → 구간이 겹치거나 빠지지 않음</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">event_date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="s1">'{{ data_interval_start | ds }}'</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">event_date</span><span class="w"> </span><span class="o">&lt;</span><span class="w">  </span><span class="s1">'{{ data_interval_end | ds }}'</span><span class="p">;</span>
+</pre></div>
+</div>
+<h3 id="23">2.3 의존성과 트리거 룰</h3>
+<table>
+<thead>
+<tr>
+<th>트리거 룰</th>
+<th>동작</th>
+<th>쓰는 곳</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>all_success</code>(기본)</td>
+<td>상위 전부 성공</td>
+<td>대부분</td>
+</tr>
+<tr>
+<td><code>all_done</code></td>
+<td>상위 성공·실패 무관, 모두 끝나면</td>
+<td>정리·알림 태스크</td>
+</tr>
+<tr>
+<td><code>none_failed</code></td>
+<td>실패만 없으면(skip 허용)</td>
+<td>분기 뒤 합류 지점</td>
+</tr>
+<tr>
+<td><code>one_failed</code></td>
+<td>하나라도 실패하면 즉시</td>
+<td>장애 알림</td>
+</tr>
+<tr>
+<td><code>all_done_min_one_success</code></td>
+<td>모두 끝나고 최소 1개 성공 (3.1+)</td>
+<td>부분 실패 허용 집계</td>
+</tr>
+</tbody>
+</table>
+<p>자원 생성·삭제가 짝을 이루면 setup/teardown을 쓰십시오. 본 작업이 실패해도 teardown은 실행되어 임시 클러스터나 스테이징 테이블이 남지 않습니다.</p>
+<div class="code"><div class="lang">python</div><div class="hl"><pre><span></span><span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_staging</span><span class="p">():</span>
+    <span class="c1"># 임시 테이블·임시 클러스터 등 "작업용 자원"을 만든다</span>
+    <span class="o">...</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">drop_staging</span><span class="p">():</span>
+    <span class="c1"># 자원 정리. 아래 as_teardown() 덕분에 load가 실패해도 반드시 실행된다</span>
+    <span class="o">...</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">():</span>
+    <span class="c1"># 실제 작업</span>
+    <span class="o">...</span>
+
+<span class="c1"># as_setup():    이 태스크를 setup으로 지정 (teardown과 짝을 이룸)</span>
+<span class="c1"># as_teardown(): 본 작업의 성공/실패와 무관하게 실행되는 정리 태스크</span>
+<span class="c1"># 또 DAG Run의 최종 상태 판정에서 teardown의 실패는 기본적으로 무시된다</span>
+<span class="c1"># (정리 실패 때문에 본 작업이 실패로 보이지 않도록).</span>
+<span class="k">with</span> <span class="n">create_staging</span><span class="p">()</span><span class="o">.</span><span class="n">as_setup</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">load</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">drop_staging</span><span class="p">()</span><span class="o">.</span><span class="n">as_teardown</span><span class="p">():</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<h3 id="24">2.4 멱등성: 재실행 안전 규칙</h3>
+<p>운영에서는 같은 구간을 여러 번 재실행하게 됩니다. 같은 입력에 같은 결과가 나오도록 다음 규칙을 지킵니다.</p>
+<ol>
+<li>쓰기는 <code>INSERT OVERWRITE</code> 또는 <code>MERGE INTO</code>로. 단순 <code>INSERT INTO</code> 금지</li>
+<li>구간은 <code>data_interval_*</code>로. <code>now()</code>, <code>CURRENT_DATE</code> 금지</li>
+<li>출력 경로·파티션은 구간으로 결정</li>
+<li>외부 부작용(메일, 결제 API 등)은 별도 태스크로 떼고 재실행 여부를 명시</li>
+</ol>
+<h3 id="25">2.5 동적 태스크 매핑</h3>
+<p>런타임에 개수가 정해지는 병렬 작업에 씁니다.</p>
+<div class="code"><div class="lang">python</div><div class="hl"><pre><span></span><span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_tables</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="c1"># 실행 시점에 처리 대상 목록을 만든다 (예: 카탈로그 조회 결과).</span>
+    <span class="c1"># 반환한 리스트의 길이만큼 아래 태스크가 복제된다.</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s2">"orders"</span><span class="p">,</span> <span class="s2">"payments"</span><span class="p">,</span> <span class="s2">"refunds"</span><span class="p">]</span>
+
+<span class="c1"># max_active_tis_per_dagrun=2: 복제된 태스크 중 한 Run 안에서 동시에 2개만 실행</span>
+<span class="nd">@task</span><span class="p">(</span><span class="n">max_active_tis_per_dagrun</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compact</span><span class="p">(</span><span class="n">table</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data_interval_end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># table 인자에 리스트 원소가 하나씩 들어온다.</span>
+    <span class="c1"># UI에서는 compact[0], compact[1] ... 처럼 map_index로 구분되어 개별 재실행이 가능하다.</span>
+    <span class="o">...</span>
+
+<span class="c1"># expand(): 리스트의 원소마다 태스크 인스턴스를 하나씩 만든다 (동적 태스크 매핑)</span>
+<span class="n">compact</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="n">list_tables</span><span class="p">())</span>
+
+<span class="c1"># partial(): 모든 복제본에 공통으로 줄 인자 / expand(): 복제본마다 달라지는 인자</span>
+<span class="c1"># pool 같은 Operator 인자도 partial로 지정한다</span>
+<span class="n">compact</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">pool</span><span class="o">=</span><span class="s2">"spark_pool"</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="n">list_tables</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>매핑 개수가 수천 개를 넘으면 스케줄러와 UI가 느려집니다. 수백 개 이상이면 묶어서 한 태스크가 배치로 처리하는 편이 낫습니다.</p>
+<h3 id="26-asset">2.6 Asset 기반 스케줄링</h3>
+<p>시간 대신 "상위 데이터가 갱신되면" 실행합니다. 팀 간 DAG 연결에 가장 깔끔한 방법입니다.</p>
+<div class="code"><div class="lang">python</div><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pendulum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">airflow.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Asset</span><span class="p">,</span> <span class="n">dag</span><span class="p">,</span> <span class="n">task</span>
+
+<span class="c1"># 생산자와 소비자가 "같은 URI"로 Asset을 정의해야 연결된다.</span>
+<span class="c1"># 오타 한 글자면 조용히 연결이 끊기므로, 실무에서는 공용 모듈(common/assets.py)에 한 번만 정의하고 import 한다.</span>
+<span class="n">SILVER_SALES</span> <span class="o">=</span> <span class="n">Asset</span><span class="p">(</span><span class="s2">"iceberg://polaris/silver/sales"</span><span class="p">)</span>
+
+<span class="c1"># ---- 생산자 DAG 쪽 ----</span>
+<span class="c1"># 이 태스크가 성공으로 끝나는 순간 SILVER_SALES 갱신 이벤트가 메타 DB에 기록된다.</span>
+<span class="nd">@task</span><span class="p">(</span><span class="n">outlets</span><span class="o">=</span><span class="p">[</span><span class="n">SILVER_SALES</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_silver</span><span class="p">():</span> <span class="o">...</span>
+
+<span class="c1"># ---- 소비자 DAG ----</span>
+<span class="c1"># schedule에 cron 대신 Asset 목록을 주면 "갱신 이벤트가 오면 실행"된다.</span>
+<span class="nd">@dag</span><span class="p">(</span><span class="n">schedule</span><span class="o">=</span><span class="p">[</span><span class="n">SILVER_SALES</span><span class="p">],</span> <span class="n">start_date</span><span class="o">=</span><span class="n">pendulum</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">mart_sales</span><span class="p">():</span>
+    <span class="nd">@task</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="n">triggering_asset_events</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># triggering_asset_events: 이번 Run을 촉발한 이벤트 목록 (Asset별 dict)</span>
+        <span class="c1"># 이전 Run 이후 이벤트가 여러 번 쌓였다면 여러 개가 들어온다.</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">triggering_asset_events</span><span class="p">[</span><span class="n">SILVER_SALES</span><span class="p">]:</span>
+            <span class="c1"># extra: 생산자가 이벤트에 붙인 메타데이터 (예: 적재 건수, 스냅샷 ID)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">extra</span><span class="p">)</span>
+    <span class="n">build</span><span class="p">()</span>
+
+<span class="n">mart_sales</span><span class="p">()</span>
+</pre></div>
+</div>
+<ul>
+<li>여러 Asset 조합: <code>schedule=(A &amp; B) | C</code></li>
+<li>시간 + 데이터 혼합: <code>AssetOrTimeSchedule</code></li>
+<li>3.2에서 Asset 파티션, 3.3에서 RollupMapper/FanOutMapper 등이 추가되어 "일 파티션 7개가 모이면 주간 집계 실행" 같은 패턴을 코드로 표현할 수 있습니다.</li>
+</ul>
+<h3 id="27-deferrable">2.7 센서와 deferrable</h3>
+<p>외부 조건을 기다리는 센서는 워커 슬롯을 점유합니다. 반드시 <code>mode="reschedule"</code> 또는 <code>deferrable=True</code>를 씁니다.</p>
+<div class="code"><div class="lang">python</div><div class="hl"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">airflow.providers.standard.sensors.external_task</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExternalTaskSensor</span>
+
+<span class="c1"># 다른 DAG의 완료를 기다리는 센서</span>
+<span class="n">wait_upstream</span> <span class="o">=</span> <span class="n">ExternalTaskSensor</span><span class="p">(</span>
+    <span class="n">task_id</span><span class="o">=</span><span class="s2">"wait_upstream"</span><span class="p">,</span>
+    <span class="n">external_dag_id</span><span class="o">=</span><span class="s2">"ingest_orders"</span><span class="p">,</span>   <span class="c1"># 기다릴 DAG</span>
+    <span class="n">external_task_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>              <span class="c1"># None = 특정 태스크가 아니라 DAG Run 전체의 성공을 기다림</span>
+    <span class="c1"># deferrable=True: 대기하는 동안 워커 슬롯을 반납하고 Triggerer 프로세스가 비동기로 감시한다.</span>
+    <span class="c1"># False면 대기 내내 워커 하나를 점유해, 센서가 많아지면 정작 일할 슬롯이 없어진다.</span>
+    <span class="n">deferrable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">timeout</span><span class="o">=</span><span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span>                <span class="c1"># 3시간 안에 조건이 안 맞으면 실패 처리</span>
+    <span class="n">poke_interval</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span>                  <span class="c1"># 120초마다 조건 확인</span>
+<span class="p">)</span>
+<span class="c1"># 주의: 두 DAG의 logical date(구간)가 맞아야 매칭된다.</span>
+<span class="c1"># 스케줄이 다르면 execution_date_fn / execution_delta로 대상 구간을 계산해 줘야 한다.</span>
+</pre></div>
+</div>
+<p>가능하면 센서보다 Asset 트리거가 낫습니다. 센서는 "상대 DAG가 언제 끝날지" 추측해야 하지만, Asset은 끝났다는 사실을 전달받습니다.</p>
+<h3 id="28">2.8 재시도와 타임아웃 기준</h3>
+<table>
+<thead>
+<tr>
+<th>설정</th>
+<th>권장</th>
+<th>이유</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>retries</code></td>
+<td>2\~3</td>
+<td>네트워크·일시 장애 흡수. 로직 오류는 재시도해도 실패</td>
+</tr>
+<tr>
+<td><code>retry_exponential_backoff</code></td>
+<td>True</td>
+<td>외부 시스템 과부하 시 연쇄 실패 방지</td>
+</tr>
+<tr>
+<td><code>execution_timeout</code></td>
+<td>평소 소요의 2\~3배</td>
+<td>행(hang) 태스크가 슬롯을 영구 점유하는 것을 방지</td>
+</tr>
+<tr>
+<td><code>dagrun_timeout</code></td>
+<td>DAG 수준 상한</td>
+<td>전체 지연 감지</td>
+</tr>
+<tr>
+<td>Deadline Alerts</td>
+<td>SLA 대체(3.1+)</td>
+<td>구 <code>sla</code> 파라미터는 제거됨</td>
+</tr>
+</tbody>
+</table>
+<p>3.3부터는 retry policy를 플러그인으로 붙여 "특정 예외만 재시도" 같은 정책도 표현할 수 있습니다. 재시도해도 소용없는 오류는 <code>AirflowFailException</code>을 던져 즉시 실패시키십시오.</p>
+<div class="code"><div class="lang">python</div><div class="hl"><pre><span></span><span class="c1"># 3.2부터 태스크용 예외는 Task SDK 쪽 경로에서 import 한다</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">airflow.sdk.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">AirflowFailException</span><span class="p">,</span> <span class="n">AirflowSkipException</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">check</span><span class="p">(</span><span class="n">rows</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">rows</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># Skip: 이 태스크를 skipped로 표시. 기본 트리거 룰(all_success)인 하위 태스크도 연쇄적으로 skip된다.</span>
+        <span class="c1"># "오늘은 처리할 데이터가 없음"처럼 정상적인 빈 결과에 쓴다.</span>
+        <span class="k">raise</span> <span class="n">AirflowSkipException</span><span class="p">(</span><span class="s2">"원천 데이터 없음"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">rows</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># Fail: retries 설정을 무시하고 즉시 실패. 재시도해도 결과가 같은 오류(데이터 이상, 설정 오류)에 쓴다.</span>
+        <span class="c1"># 일반 Exception은 retries 횟수만큼 재시도된 뒤 실패한다.</span>
+        <span class="k">raise</span> <span class="n">AirflowFailException</span><span class="p">(</span><span class="s2">"비정상 건수"</span><span class="p">)</span>
+</pre></div>
+</div>
+<h2 id="3">3. 설정과 배포</h2>
+<p>운영 설정은 <code>airflow.cfg</code>를 직접 고치지 말고 <code>AIRFLOW__{섹션}__{키}</code> 환경변수나 Helm values로 주입합니다. 설정이 이미지·코드와 함께 버전 관리되고, 우선순위도 명확해집니다(환경변수 &gt; cfg &gt; 기본값).</p>
+<h3 id="31-executor">3.1 Executor 선택</h3>
+<table>
+<thead>
+<tr>
+<th>Executor</th>
+<th>적합한 상황</th>
+<th>주의점</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LocalExecutor</td>
+<td>단일 노드, 소규모(동시 태스크 수십 개 이하)</td>
+<td>수평 확장 불가</td>
+</tr>
+<tr>
+<td>CeleryExecutor</td>
+<td>고정 워커 풀, 짧은 태스크가 많음</td>
+<td>Redis/RabbitMQ 운영 필요</td>
+</tr>
+<tr>
+<td>KubernetesExecutor</td>
+<td>태스크마다 격리, 의존성이 제각각</td>
+<td>Pod 기동 지연(수\~수십 초)</td>
+</tr>
+<tr>
+<td>EdgeExecutor</td>
+<td>원격·엣지 환경의 워커</td>
+<td>3.x 신규, provider 설치 필요</td>
+</tr>
+<tr>
+<td>혼용</td>
+<td><code>executor = CeleryExecutor,KubernetesExecutor</code></td>
+<td>태스크에 <code>executor="KubernetesExecutor"</code>로 지정</td>
+</tr>
+</tbody>
+</table>
+<p>실무에서는 Celery 기본 + 무거운 격리 작업만 Kubernetes로 보내는 혼용 구성이 흔합니다. 어차피 Spark 작업은 Spark 클러스터에서 돌기 때문에 Airflow 워커는 가볍게 유지하는 것이 핵심입니다.</p>
+<h3 id="32">3.2 핵심 설정 (환경변수 형식)</h3>
+<div class="code"><div class="lang">bash</div><div class="hl"><pre><span></span><span class="c1"># 형식: AIRFLOW__{섹션}__{키}=값  (밑줄 2개). airflow.cfg의 [섹션] 키 = 값 과 동일한 의미</span>
+<span class="c1"># 현재 적용된 값 확인: airflow config get-value core executor</span>
+
+<span class="c1"># ===== 메타 DB / 보안 =====</span>
+<span class="c1"># 메타데이터 DB 접속 문자열. 운영은 PostgreSQL (SQLite는 개발용, 병렬 실행 불가)</span>
+<span class="nv">AIRFLOW__DATABASE__SQL_ALCHEMY_CONN</span><span class="o">=</span>postgresql+psycopg2://airflow:***@pg:5432/airflow
+<span class="c1"># Connection 비밀번호·Variable을 DB에 암호화 저장할 때 쓰는 키.</span>
+<span class="c1"># 분실하면 저장된 Connection을 복호화할 수 없다 → 반드시 시크릿 저장소에 백업</span>
+<span class="nv">AIRFLOW__CORE__FERNET_KEY</span><span class="o">=</span>***
+<span class="c1"># API server가 워커에게 발급하는 토큰의 서명 키. 모든 컴포넌트에 같은 값이어야 한다</span>
+<span class="nv">AIRFLOW__API_AUTH__JWT_SECRET</span><span class="o">=</span>***
+<span class="c1"># 워커가 태스크 상태를 보고할 API server 주소 (구 [core] 키는 deprecated)</span>
+<span class="nv">AIRFLOW__WORKERS__EXECUTION_API_SERVER_URL</span><span class="o">=</span>http://airflow-api-server:8080/execution/
+
+<span class="c1"># ===== 실행기 / 동시성 =====</span>
+<span class="nv">AIRFLOW__CORE__EXECUTOR</span><span class="o">=</span>CeleryExecutor
+<span class="nv">AIRFLOW__CORE__PARALLELISM</span><span class="o">=</span><span class="m">64</span><span class="w">                 </span><span class="c1"># 스케줄러 1대가 동시에 running 상태로 둘 수 있는 태스크 총수</span>
+<span class="nv">AIRFLOW__CORE__MAX_ACTIVE_TASKS_PER_DAG</span><span class="o">=</span><span class="m">16</span><span class="w">    </span><span class="c1"># DAG 하나가 동시에 돌릴 수 있는 태스크 수 (DAG에서 max_active_tasks로 덮어씀)</span>
+<span class="nv">AIRFLOW__CORE__MAX_ACTIVE_RUNS_PER_DAG</span><span class="o">=</span><span class="m">4</span><span class="w">      </span><span class="c1"># DAG 하나의 동시 Run 수 기본값 (DAG의 max_active_runs로 덮어씀)</span>
+<span class="nv">AIRFLOW__CELERY__WORKER_CONCURRENCY</span><span class="o">=</span><span class="m">16</span><span class="w">        </span><span class="c1"># Celery 워커 프로세스 1개가 동시에 처리하는 태스크 수</span>
+
+<span class="c1"># ===== DAG 파싱 =====</span>
+<span class="nv">AIRFLOW__DAG_PROCESSOR__REFRESH_INTERVAL</span><span class="o">=</span><span class="m">60</span><span class="w">           </span><span class="c1"># 번들(Git 등)에서 새 코드를 가져오는 주기(초)</span>
+<span class="nv">AIRFLOW__DAG_PROCESSOR__MIN_FILE_PROCESS_INTERVAL</span><span class="o">=</span><span class="m">30</span><span class="w">  </span><span class="c1"># 같은 파일을 다시 파싱하기까지 최소 간격(초)</span>
+<span class="nv">AIRFLOW__DAG_PROCESSOR__DAG_FILE_PROCESSOR_TIMEOUT</span><span class="o">=</span><span class="m">60</span><span class="w"> </span><span class="c1"># 파일 하나 파싱 제한 시간. 넘으면 Import Error</span>
+
+<span class="c1"># ===== 스케줄 기본값 =====</span>
+<span class="nv">AIRFLOW__SCHEDULER__CATCHUP_BY_DEFAULT</span><span class="o">=</span>False<span class="w">  </span><span class="c1"># DAG에 catchup을 안 적었을 때의 기본값</span>
+<span class="nv">AIRFLOW__CORE__DEFAULT_TIMEZONE</span><span class="o">=</span>Asia/Seoul<span class="w">    </span><span class="c1"># tz 없는 datetime을 해석할 기준 시간대</span>
+<span class="nv">AIRFLOW__CORE__LOAD_EXAMPLES</span><span class="o">=</span>False<span class="w">            </span><span class="c1"># 예제 DAG 수십 개가 UI를 어지럽히지 않게</span>
+
+<span class="c1"># ===== 로그 =====</span>
+<span class="c1"># 워커 Pod가 사라져도 로그를 볼 수 있도록 오브젝트 스토리지에 업로드</span>
+<span class="nv">AIRFLOW__LOGGING__REMOTE_LOGGING</span><span class="o">=</span>True
+<span class="nv">AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER</span><span class="o">=</span>s3://airflow-logs/<span class="w">   </span><span class="c1"># 스킴(s3://, gs:// ...)으로 핸들러가 결정됨</span>
+<span class="nv">AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID</span><span class="o">=</span>aws_logs<span class="w">                 </span><span class="c1"># 업로드에 쓸 Connection</span>
+
+<span class="c1"># ===== 시크릿 백엔드 =====</span>
+<span class="c1"># Connection/Variable을 메타 DB 대신 Vault에서 먼저 찾는다</span>
+<span class="nv">AIRFLOW__SECRETS__BACKEND</span><span class="o">=</span>airflow.providers.hashicorp.secrets.vault.VaultBackend
+<span class="c1"># connections_path: Vault 안에서 Connection을 찾을 경로 (secret/airflow/connections/&lt;conn_id&gt;)</span>
+<span class="nv">AIRFLOW__SECRETS__BACKEND_KWARGS</span><span class="o">={</span><span class="s2">"connections_path"</span>:<span class="w"> </span><span class="s2">"airflow/connections"</span>,<span class="w"> </span><span class="s2">"variables_path"</span>:<span class="w"> </span><span class="s2">"airflow/variables"</span>,<span class="w"> </span><span class="s2">"mount_point"</span>:<span class="w"> </span><span class="s2">"secret"</span>,<span class="w"> </span><span class="s2">"url"</span>:<span class="w"> </span><span class="s2">"https://vault:8200"</span><span class="o">}</span>
+</pre></div>
+</div>
+<blockquote>
+<p><code>FERNET_KEY</code>, <code>JWT_SECRET</code>은 모든 컴포넌트(API server, scheduler, dag-processor, worker, triggerer)에 같은 값이 들어가야 합니다. 값이 어긋나면 "태스크가 running에서 멈춤", "Invalid token" 같은 증상으로 나타납니다.</p>
+</blockquote>
+<h3 id="33-dag-git-dag-bundle">3.3 DAG 배포: Git Dag Bundle</h3>
+<p>3.x에서는 git-sync 사이드카 대신 Git Dag Bundle을 쓰는 것이 기본 경로입니다. 실행 중인 DAG Run은 시작 시점의 커밋으로 끝까지 실행되므로, 배포 중 코드 불일치 사고가 사라집니다.</p>
+<div class="code"><div class="lang">ini</div><div class="hl"><pre><span></span><span class="k">[dag_processor]</span>
+<span class="c1"># DAG 코드를 어디서 가져올지 정의하는 목록. 여러 개를 둘 수 있다 (팀별 저장소 등).</span>
+<span class="na">dag_bundle_config_list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">[</span>
+<span class="w">    </span><span class="na">{</span>
+<span class="w">      </span><span class="na">"name"</span><span class="o">:</span><span class="w"> </span><span class="s">"data-dags"</span><span class="na">,                                        # 번들 이름. UI의 DAG 목록 필터에 표시</span>
+<span class="w">      </span><span class="na">"classpath"</span><span class="o">:</span><span class="w"> </span><span class="s">"airflow.providers.git.bundles.git.GitDagBundle"</span><span class="na">, # Git 번들 (git provider 설치 필요)</span>
+<span class="w">      </span><span class="na">"kwargs"</span><span class="o">:</span><span class="w"> </span><span class="s">{</span>
+<span class="w">        </span><span class="na">"git_conn_id"</span><span class="o">:</span><span class="w"> </span><span class="s">"git_data_dags"</span><span class="na">,   # 저장소 URL·토큰을 담은 Connection. 토큰을 여기 직접 쓰지 말 것</span>
+<span class="w">        </span><span class="na">"subdir"</span><span class="o">:</span><span class="w"> </span><span class="s">"dags"</span><span class="na">,                 # 저장소 안에서 DAG가 있는 하위 폴더</span>
+<span class="w">        </span><span class="na">"tracking_ref"</span><span class="o">:</span><span class="w"> </span><span class="s">"main"</span><span class="na">,           # 따라갈 브랜치/태그/커밋</span>
+<span class="w">        </span><span class="na">"refresh_interval"</span><span class="o">:</span><span class="w"> </span><span class="s">60</span><span class="w">            </span><span class="c1"># 이 번들만의 갱신 주기(초)</span>
+<span class="w">      </span><span class="na">}</span>
+<span class="w">    </span><span class="na">}</span>
+<span class="w">  </span><span class="na">]</span>
+<span class="c1"># ↑ 마지막 줄의 들여쓰기가 있어야 여러 줄 값으로 인식된다 (configparser 규칙)</span>
+
+<span class="k">[core]</span>
+<span class="c1"># 실패한 Run을 clear 해서 재실행할 때 기본으로 어떤 코드를 쓸지</span>
+<span class="c1"># False: 그 Run이 처음 실행된 커밋 (재현성)  /  True: 현재 최신 커밋 (버그 수정 반영)</span>
+<span class="na">rerun_with_latest_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">False</span>
+</pre></div>
+</div>
+<p>토큰을 <code>repo_url</code>에 넣지 말고 <code>git_conn_id</code>의 Connection으로 분리합니다. 번들 설정은 Config API로 노출될 수 있습니다. 버그를 고친 뒤 실패 Run을 재실행할 때는 UI의 "최신 버전으로 재실행" 체크박스를 확인하십시오. 기본값이 False이면 옛 코드로 다시 돕니다.</p>
+<h3 id="34-helm-kubernetes-values">3.4 Helm (Kubernetes) values 예시</h3>
+<div class="code"><div class="lang">yaml</div><div class="hl"><pre><span></span><span class="c1"># values-prod.yaml  (apache-airflow 공식 Helm 차트)</span>
+<span class="c1"># 설치: helm upgrade --install airflow apache-airflow/airflow -n airflow -f values-prod.yaml</span>
+<span class="nt">airflowVersion</span><span class="p">:</span><span class="w"> </span><span class="s">"3.3.2"</span><span class="w">                   </span><span class="c1"># 차트가 버전별 기본 설정을 고르는 기준</span>
+<span class="nt">defaultAirflowTag</span><span class="p">:</span><span class="w"> </span><span class="s">"3.3.2-python3.12"</span>
+<span class="nt">images</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">airflow</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">repository</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">registry.internal/airflow</span><span class="w">  </span><span class="c1"># provider·라이브러리를 미리 설치한 사내 이미지</span>
+<span class="w">    </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="s">"3.3.2-20260920"</span><span class="w">                  </span><span class="c1"># 날짜 태그로 빌드 이력 추적. latest 금지</span>
+
+<span class="c1"># Celery를 기본으로, 태스크에 executor="KubernetesExecutor"를 지정한 것만 Pod로 실행</span>
+<span class="nt">executor</span><span class="p">:</span><span class="w"> </span><span class="s">"CeleryExecutor,KubernetesExecutor"</span>
+
+<span class="nt">postgresql</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">                 </span><span class="c1"># 차트 내장 Postgres 비활성화. 운영 DB는 외부 관리형으로</span>
+<span class="nt">data</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">metadataSecretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">airflow-metadata-db</span><span class="w">   </span><span class="c1"># DB 접속 문자열을 담은 K8s Secret 이름</span>
+<span class="nt">fernetKeySecretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">airflow-fernet</span><span class="w">          </span><span class="c1"># FERNET_KEY Secret</span>
+<span class="nt">jwtSecretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">airflow-jwt</span><span class="w">       </span><span class="c1"># 차트 버전별 키 이름은 values.schema.json으로 확인</span>
+
+<span class="nt">apiServer</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w">                    </span><span class="c1"># UI·REST·Execution API. 워커 수가 많으면 늘린다</span>
+<span class="nt">scheduler</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w">                    </span><span class="c1"># 스케줄러 HA (DB 행 잠금으로 협업하므로 PostgreSQL 필수)</span>
+<span class="nt">dagProcessor</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">                  </span><span class="c1"># 3.x에서는 별도 프로세스가 필수</span>
+<span class="nt">triggerer</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w">                    </span><span class="c1"># deferrable 센서를 쓰면 필수</span>
+<span class="nt">workers</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w">                    </span><span class="c1"># Celery 워커 Pod 수</span>
+<span class="w">  </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">requests</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s">"1"</span><span class="p p-Indicator">,</span><span class="nt"> memory</span><span class="p">:</span><span class="w"> </span><span class="nv">2Gi</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">limits</span><span class="p">:</span><span class="w">   </span><span class="p p-Indicator">{</span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="nv">4Gi</span><span class="p p-Indicator">}</span><span class="w">      </span><span class="c1"># 메모리 limit 초과 시 OOMKilled → 태스크는 실패로 기록됨</span>
+
+<span class="c1"># config: airflow.cfg 섹션을 그대로 옮긴 구조. 값은 문자열로</span>
+<span class="nt">config</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">core</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">load_examples</span><span class="p">:</span><span class="w"> </span><span class="s">"False"</span>
+<span class="w">    </span><span class="nt">default_timezone</span><span class="p">:</span><span class="w"> </span><span class="s">"Asia/Seoul"</span>
+<span class="w">  </span><span class="nt">logging</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">remote_logging</span><span class="p">:</span><span class="w"> </span><span class="s">"True"</span>
+<span class="w">    </span><span class="nt">remote_base_log_folder</span><span class="p">:</span><span class="w"> </span><span class="s">"s3://airflow-logs/"</span>
+<span class="w">    </span><span class="nt">remote_log_conn_id</span><span class="p">:</span><span class="w"> </span><span class="s">"aws_logs"</span>
+
+<span class="c1"># env: 모든 Airflow 컴포넌트 컨테이너에 주입할 환경변수</span>
+<span class="nt">env</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AIRFLOW__SECRETS__BACKEND</span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">airflow.providers.hashicorp.secrets.vault.VaultBackend</span>
+</pre></div>
+</div>
+<p>사내 이미지는 공식 constraints 파일로 provider를 고정해 빌드합니다.</p>
+<div class="code"><div class="lang">dockerfile</div><div class="hl"><pre><span></span><span class="c"># 공식 이미지 위에 필요한 provider만 추가한 사내 이미지</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">apache/airflow:3.3.2-python3.12</span>
+<span class="k">ARG</span><span class="w"> </span><span class="nv">AIRFLOW_VERSION</span><span class="o">=</span><span class="m">3</span>.3.2
+<span class="k">ARG</span><span class="w"> </span><span class="nv">PY</span><span class="o">=</span><span class="m">3</span>.12
+
+<span class="c"># airflow 자신도 같이 명시해야 pip이 airflow를 다른 버전으로 올리거나 내리지 않는다.</span>
+<span class="c"># --constraint: Airflow 릴리스별로 검증된 의존성 버전 고정 파일. 빠뜨리면 나중에 이미지를 다시 빌드할 때</span>
+<span class="c">#               하위 라이브러리 버전이 바뀌어 "어제는 됐는데 오늘은 안 되는" 상황이 생긴다.</span>
+<span class="k">RUN</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s2">"apache-airflow==</span><span class="si">${</span><span class="nv">AIRFLOW_VERSION</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>apache-airflow-providers-apache-spark<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>apache-airflow-providers-cncf-kubernetes<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>apache-airflow-providers-common-sql<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>apache-airflow-providers-mysql<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>apache-airflow-providers-git<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>apache-airflow-providers-amazon<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--constraint<span class="w"> </span><span class="s2">"https://raw.githubusercontent.com/apache/airflow/constraints-</span><span class="si">${</span><span class="nv">AIRFLOW_VERSION</span><span class="si">}</span><span class="s2">/constraints-</span><span class="si">${</span><span class="nv">PY</span><span class="si">}</span><span class="s2">.txt"</span>
+<span class="c"># 각 provider의 역할:</span>
+<span class="c">#   apache-spark     : SparkSubmitOperator / SparkSqlOperator</span>
+<span class="c">#   cncf-kubernetes  : KubernetesExecutor, KubernetesPodOperator</span>
+<span class="c">#   common-sql       : SQLExecuteQueryOperator 등 SQL 공통 Operator</span>
+<span class="c">#   mysql            : MySQL 프로토콜 Hook (StarRocks 접속에 사용)</span>
+<span class="c">#   git              : GitDagBundle</span>
+<span class="c">#   amazon           : S3 원격 로그, S3 Hook</span>
+</pre></div>
+</div>
+<h3 id="35">3.5 로컬 개발 환경</h3>
+<div class="code"><div class="lang">bash</div><div class="hl"><pre><span></span><span class="c1"># ---- 방법 1: 공식 docker-compose (운영과 비슷한 구성: Celery + Postgres + Redis) ----</span>
+curl<span class="w"> </span>-LfO<span class="w"> </span><span class="s1">'https://airflow.apache.org/docs/apache-airflow/3.3.2/docker-compose.yaml'</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>./dags<span class="w"> </span>./logs<span class="w"> </span>./plugins<span class="w"> </span>./config<span class="w">   </span><span class="c1"># 컨테이너에 마운트될 로컬 폴더</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"AIRFLOW_UID=</span><span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span><span class="s2">"</span><span class="w"> </span>&gt;<span class="w"> </span>.env<span class="w">           </span><span class="c1"># 컨테이너가 만든 파일이 root 소유가 되지 않도록 내 UID로 실행</span>
+docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>airflow-init<span class="w">               </span><span class="c1"># 메타 DB 마이그레이션 + 관리자 계정 생성 (최초 1회)</span>
+docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w">                         </span><span class="c1"># 전체 기동. UI: http://localhost:8080</span>
+
+<span class="c1"># ---- 방법 2: 단일 프로세스 (가장 가볍게) ----</span>
+uv<span class="w"> </span>venv<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"apache-airflow==3.3.2"</span><span class="w"> </span>--constraint<span class="w"> </span>&lt;constraints-url&gt;
+<span class="c1"># standalone: DB 초기화 + 모든 컴포넌트를 한 프로세스로 기동. 관리자 비밀번호는 콘솔에 출력됨</span>
+airflow<span class="w"> </span>standalone
+</pre></div>
+</div>
+<h3 id="36-connection">3.6 Connection 관리</h3>
+<p>Connection은 UI에서 손으로 만들지 말고 시크릿 백엔드나 환경변수로 정의해 코드처럼 관리합니다.</p>
+<div class="code"><div class="lang">bash</div><div class="hl"><pre><span></span><span class="c1"># 환경변수 이름 규칙: AIRFLOW_CONN_&lt;CONN_ID 대문자&gt;</span>
+<span class="c1"># → DAG에서는 conn_id="starrocks_default" (소문자)로 참조한다</span>
+
+<span class="c1"># URI 형식: &lt;conn_type&gt;://&lt;login&gt;:&lt;password&gt;@&lt;host&gt;:&lt;port&gt;/&lt;schema&gt;</span>
+<span class="c1"># StarRocks는 MySQL 프로토콜이므로 conn_type=mysql, FE의 쿼리 포트 9030</span>
+<span class="nv">AIRFLOW_CONN_STARROCKS_DEFAULT</span><span class="o">=</span><span class="s1">'mysql://etl_user:***@starrocks-fe:9030/mart'</span>
+
+<span class="c1"># JSON 형식: extra 필드가 많거나 URI 인코딩이 번거로울 때</span>
+<span class="nv">AIRFLOW_CONN_SPARK_K8S</span><span class="o">=</span><span class="s1">'{</span>
+<span class="s1">  "conn_type": "spark",</span>
+<span class="s1">  "host": "k8s://https://kubernetes.default.svc",</span>
+<span class="s1">  "port": 443,</span>
+<span class="s1">  "extra": {"deploy-mode": "cluster", "namespace": "spark-jobs"}</span>
+<span class="s1">}'</span>
+<span class="c1"># host의 k8s:// 접두사 → spark-submit --master k8s://... 로 전달됨</span>
+<span class="c1"># deploy-mode=cluster → 드라이버도 K8s Pod에서 실행 (Airflow 워커 자원을 쓰지 않음)</span>
+
+<span class="c1"># 확인: airflow connections get starrocks_default</span>
+</pre></div>
+</div>
+<ul>
+<li>조회 순서: 시크릿 백엔드 → 환경변수 → 메타 DB</li>
+<li>환경별(dev/stg/prd) Connection ID는 동일하게 두고 값만 바꿔, DAG 코드에 환경 분기가 생기지 않게 합니다.</li>
+</ul>
+<h2 id="4">4. 운용</h2>
+<p>운영에서 매일 하는 일은 "실패 원인 파악 → 수정 → 올바른 범위만 재실행"입니다. 재실행 범위를 잘못 잡으면 멀쩡한 하위 마트까지 덮어쓰므로, clear 전에 영향 범위를 먼저 확인합니다.</p>
+<h3 id="41-cli">4.1 자주 쓰는 CLI</h3>
+<div class="code"><div class="lang">bash</div><div class="hl"><pre><span></span><span class="c1"># ---- 배포 전 점검 ----</span>
+airflow<span class="w"> </span>dags<span class="w"> </span>list-import-errors<span class="w">     </span><span class="c1"># 파싱에 실패한 파일과 에러 메시지. 1건이라도 있으면 해당 DAG는 UI에서 사라진다</span>
+airflow<span class="w"> </span>dags<span class="w"> </span>report<span class="w">                 </span><span class="c1"># 파일별 파싱 소요 시간. 수 초 이상 걸리는 파일은 최상위 코드를 의심</span>
+
+<span class="c1"># ---- 개발·디버깅 ----</span>
+<span class="c1"># 태스크 1개를 지정 날짜 기준으로 실행. 메타 DB에 상태를 남기지 않고 의존성도 무시한다</span>
+<span class="c1">#   → 로직만 빠르게 확인할 때. 단, 외부 시스템에는 실제로 쓰기가 일어나므로 dev Connection으로</span>
+airflow<span class="w"> </span>tasks<span class="w"> </span><span class="nb">test</span><span class="w"> </span>sales_daily<span class="w"> </span>extract<span class="w"> </span><span class="m">2026</span>-09-21
+
+<span class="c1"># DAG 전체를 한 프로세스에서 순서대로 실행 (스케줄러·워커 없이). 로컬 디버깅용</span>
+airflow<span class="w"> </span>dags<span class="w"> </span><span class="nb">test</span><span class="w"> </span>sales_daily<span class="w"> </span><span class="m">2026</span>-09-21
+
+<span class="c1"># ---- 운영 ----</span>
+<span class="c1"># 수동 실행. --conf의 JSON은 태스크에서 {{ dag_run.conf }} 또는 params로 읽는다</span>
+airflow<span class="w"> </span>dags<span class="w"> </span>trigger<span class="w"> </span>sales_daily<span class="w"> </span>--conf<span class="w"> </span><span class="s1">'{"full_refresh": true}'</span>
+
+<span class="c1"># 실패한 태스크를 재실행 대기 상태로 되돌림 (clear = 상태 초기화 → 스케줄러가 다시 실행)</span>
+<span class="c1">#   -t          : task_id 정규식</span>
+<span class="c1">#   --downstream: 하위 태스크도 함께 clear (상위 결과가 바뀌면 하위도 다시 돌아야 하므로)</span>
+<span class="c1">#   -s / -e     : 대상 구간 시작·끝</span>
+<span class="c1">#   --only-failed: 성공한 것은 건드리지 않음</span>
+airflow<span class="w"> </span>tasks<span class="w"> </span>clear<span class="w"> </span>sales_daily<span class="w"> </span>-t<span class="w"> </span><span class="s1">'merge_to_mart'</span><span class="w"> </span>--downstream<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-s<span class="w"> </span><span class="m">2026</span>-09-15<span class="w"> </span>-e<span class="w"> </span><span class="m">2026</span>-09-21<span class="w"> </span>--only-failed
+
+<span class="c1"># 일시정지: 새 Run이 생기지 않음 (실행 중인 Run은 계속 진행)</span>
+airflow<span class="w"> </span>dags<span class="w"> </span>pause<span class="w"> </span>sales_daily
+airflow<span class="w"> </span>dags<span class="w"> </span>unpause<span class="w"> </span>sales_daily
+</pre></div>
+</div>
+<h3 id="42">4.2 백필</h3>
+<p>3.x의 백필은 스케줄러가 관리하는 정식 기능입니다. UI(DAG 화면의 Backfill 버튼) 또는 CLI로 만들고, 일반 스케줄 실행과 같은 경로로 처리됩니다.</p>
+<div class="code"><div class="lang">bash</div><div class="hl"><pre><span></span><span class="c1"># 8월 한 달치를 다시 처리하는 백필 생성 (스케줄러가 실제 실행을 관리)</span>
+airflow<span class="w"> </span>backfill<span class="w"> </span>create<span class="w"> </span>--dag-id<span class="w"> </span>sales_daily<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--from-date<span class="w"> </span><span class="m">2026</span>-08-01<span class="w"> </span>--to-date<span class="w"> </span><span class="m">2026</span>-08-31<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--max-active-runs<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--reprocess-behavior<span class="w"> </span>failed
+<span class="c1"># --max-active-runs 3       : 동시에 3일치씩만 처리 (하위 시스템 부하 조절)</span>
+<span class="c1"># --reprocess-behavior      : 이미 Run이 있는 날짜를 어떻게 할지</span>
+<span class="c1">#     none      → 기존 Run이 있는 날짜는 건너뜀 (빈 날짜만 채움)</span>
+<span class="c1">#     failed    → 실패했던 날짜만 다시 실행</span>
+<span class="c1">#     completed → 성공한 날짜까지 전부 다시 실행 (멱등한 DAG에서만)</span>
+<span class="c1"># 진행 상황은 UI의 Backfill 목록에서 확인하고, 중단도 거기서 할 수 있다</span>
+</pre></div>
+</div>
+<ul>
+<li><code>--max-active-runs</code>로 동시성을 제한해 Spark·StarRocks에 폭주 부하가 가지 않게 합니다.</li>
+<li><code>reprocess-behavior=completed</code>는 성공한 구간까지 다시 돌립니다. 멱등하지 않은 DAG에서는 쓰지 마십시오.</li>
+<li>파티션 Asset DAG는 3.3부터 파티션 날짜 범위로 백필할 수 있습니다.</li>
+</ul>
+<h3 id="43">4.3 동시성 제어 계층</h3>
+<p>동시성은 여러 층에서 걸리며, 가장 좁은 곳이 실제 상한이 됩니다.</p>
+<table>
+<thead>
+<tr>
+<th>층위</th>
+<th>설정</th>
+<th>용도</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>전체</td>
+<td><code>core.parallelism</code></td>
+<td>스케줄러 한 대의 총량</td>
+</tr>
+<tr>
+<td>DAG</td>
+<td><code>max_active_runs</code>, <code>max_active_tasks</code></td>
+<td>DAG 하나의 폭주 방지</td>
+</tr>
+<tr>
+<td>태스크</td>
+<td><code>max_active_tis_per_dag</code>, <code>max_active_tis_per_dagrun</code></td>
+<td>특정 태스크 동시 실행 제한</td>
+</tr>
+<tr>
+<td>Pool</td>
+<td><code>pool</code>, <code>pool_slots</code></td>
+<td>외부 시스템 보호(DAG를 가로질러 적용)</td>
+</tr>
+<tr>
+<td>워커</td>
+<td><code>worker_concurrency</code>, <code>queue</code></td>
+<td>물리 자원</td>
+</tr>
+</tbody>
+</table>
+<p>Pool은 외부 자원 단위로 만듭니다.</p>
+<div class="code"><div class="lang">bash</div><div class="hl"><pre><span></span><span class="c1"># airflow pools set &lt;이름&gt; &lt;슬롯 수&gt; &lt;설명&gt;</span>
+<span class="c1"># 이 Pool을 쓰는 모든 태스크(DAG를 가리지 않음)의 동시 실행 합계가 슬롯 수를 넘지 않는다</span>
+airflow<span class="w"> </span>pools<span class="w"> </span><span class="nb">set</span><span class="w"> </span>spark_pool<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="s2">"Spark 동시 제출 상한"</span>
+airflow<span class="w"> </span>pools<span class="w"> </span><span class="nb">set</span><span class="w"> </span>starrocks_pool<span class="w"> </span><span class="m">6</span><span class="w"> </span><span class="s2">"StarRocks 무거운 INSERT 상한"</span>
+<span class="c1"># 슬롯이 없으면 태스크는 실패하지 않고 scheduled 상태로 대기한다</span>
+</pre></div>
+</div>
+<div class="code"><div class="lang">python</div><div class="hl"><pre><span></span><span class="c1"># pool_slots: 이 태스크 하나가 차지하는 슬롯 수. 무거운 잡은 크게 잡아 동시 실행 수를 줄인다</span>
+<span class="c1"># (spark_pool이 10슬롯이면 이 잡은 최대 5개까지 동시 실행)</span>
+<span class="n">SparkSubmitOperator</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="s2">"spark_pool"</span><span class="p">,</span> <span class="n">pool_slots</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="44">4.4 모니터링과 알림</h3>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>보는 지표</th>
+<th>경보 기준 예</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>스케줄러</td>
+<td><code>scheduler.heartbeat</code>, <code>scheduler.scheduler_loop_duration</code></td>
+<td>heartbeat 60초 이상 없음</td>
+</tr>
+<tr>
+<td>DAG 파싱</td>
+<td><code>dag_processing.total_parse_time</code>, import error 수</td>
+<td>import error ≥ 1</td>
+</tr>
+<tr>
+<td>큐 적체</td>
+<td><code>executor.queued_tasks</code>, <code>pool.queued_slots.{pool}</code></td>
+<td>queued 30분 이상 지속</td>
+</tr>
+<tr>
+<td>DAG 지연</td>
+<td>Deadline Alerts</td>
+<td>목표 완료 시각 초과</td>
+</tr>
+<tr>
+<td>태스크 실패</td>
+<td><code>on_failure_callback</code></td>
+<td>즉시</td>
+</tr>
+</tbody>
+</table>
+<p>메트릭은 StatsD 또는 OpenTelemetry로 내보내 Prometheus/Grafana에서 봅니다(3.3부터 OTel 타이머는 Histogram).</p>
+<div class="code"><div class="lang">bash</div><div class="hl"><pre><span></span><span class="c1"># OpenTelemetry로 메트릭 전송 → OTel Collector → Prometheus 등으로 수집</span>
+<span class="nv">AIRFLOW__METRICS__OTEL_ON</span><span class="o">=</span>True
+<span class="nv">AIRFLOW__METRICS__OTEL_HOST</span><span class="o">=</span>otel-collector<span class="w">   </span><span class="c1"># Collector 주소</span>
+<span class="nv">AIRFLOW__METRICS__OTEL_PORT</span><span class="o">=</span><span class="m">4318</span><span class="w">             </span><span class="c1"># OTLP/HTTP 기본 포트</span>
+<span class="c1"># StatsD를 이미 쓰고 있다면 AIRFLOW__METRICS__STATSD_ON=True 계열 설정을 대신 사용</span>
+</pre></div>
+</div>
+<p>실패 알림은 공통 콜백으로 한 곳에서 관리합니다.</p>
+<div class="code"><div class="lang">python</div><div class="hl"><pre><span></span><span class="c1"># dags/common/alerts.py  — 모든 DAG가 import 해서 쓰는 공용 알림</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">airflow.providers.slack.notifications.slack</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlackNotifier</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">on_failure</span><span class="p">():</span>
+    <span class="c1"># Notifier: 콜백용으로 만들어진 알림 클래스. text는 Jinja 템플릿이라 실패 시점의 컨텍스트가 채워진다</span>
+    <span class="k">return</span> <span class="n">SlackNotifier</span><span class="p">(</span>
+        <span class="n">slack_conn_id</span><span class="o">=</span><span class="s2">"slack_alerts"</span><span class="p">,</span>     <span class="c1"># Slack 봇 토큰을 담은 Connection</span>
+        <span class="n">channel</span><span class="o">=</span><span class="s2">"#data-alerts"</span><span class="p">,</span>
+        <span class="n">text</span><span class="o">=</span><span class="p">(</span><span class="s2">":red_circle: {{ dag.dag_id }}.{{ ti.task_id }} 실패</span><span class="se">\n</span><span class="s2">"</span>
+              <span class="s2">"run: {{ run_id }}</span><span class="se">\n</span><span class="s2">"</span>          <span class="c1"># 어느 실행(구간)인지</span>
+              <span class="s2">"로그: {{ ti.log_url }}"</span><span class="p">),</span>     <span class="c1"># 클릭하면 해당 시도의 로그로 이동</span>
+    <span class="p">)</span>
+
+<span class="c1"># DAG에서: default_args에 넣으면 모든 태스크의 실패마다 호출된다.</span>
+<span class="c1"># (retries가 남아 재시도로 넘어가는 경우는 on_retry_callback 쪽이므로 최종 실패에만 알림이 간다)</span>
+<span class="nd">@dag</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">default_args</span><span class="o">=</span><span class="p">{</span><span class="s2">"on_failure_callback"</span><span class="p">:</span> <span class="n">on_failure</span><span class="p">()})</span>
+</pre></div>
+</div>
+<p>DAG 완료 시각 보장이 필요하면 SLA 대신 Deadline Alert를 씁니다.</p>
+<div class="code"><div class="lang">python</div><div class="hl"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">timedelta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">airflow.sdk.definitions.deadline</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeadlineAlert</span><span class="p">,</span> <span class="n">DeadlineReference</span><span class="p">,</span> <span class="n">AsyncCallback</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">airflow.providers.slack.notifications.slack_webhook</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlackWebhookNotifier</span>
+
+<span class="nd">@dag</span><span class="p">(</span>
+    <span class="o">...</span><span class="p">,</span>
+    <span class="n">deadline</span><span class="o">=</span><span class="n">DeadlineAlert</span><span class="p">(</span>
+        <span class="c1"># 기준 시각: Run이 큐에 들어간 시점. 이 외에 고정 시각, 평균 소요 시간 기준 등이 있다</span>
+        <span class="n">reference</span><span class="o">=</span><span class="n">DeadlineReference</span><span class="o">.</span><span class="n">DAGRUN_QUEUED_AT</span><span class="p">,</span>
+        <span class="c1"># 기준 시각 + 2시간 안에 Run이 끝나지 않으면 콜백 실행</span>
+        <span class="n">interval</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+        <span class="c1"># 콜백은 Triggerer에서 비동기로 실행된다 (워커 슬롯을 쓰지 않음)</span>
+        <span class="n">callback</span><span class="o">=</span><span class="n">AsyncCallback</span><span class="p">(</span><span class="n">SlackWebhookNotifier</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">"text"</span><span class="p">:</span> <span class="s2">"sales_daily 2시간 초과"</span><span class="p">}),</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+<span class="c1"># Run을 중단시키지는 않는다. "늦었다"는 알림만 보낸다 (구 SLA miss와 같은 역할)</span>
+</pre></div>
+</div>
+<blockquote>
+<p>Deadline API는 3.1 도입 후 계속 다듬어지고 있습니다. import 경로와 콜백 클래스는 설치된 버전 문서로 한 번 확인하십시오.</p>
+</blockquote>
+<h3 id="45">4.5 흔한 장애와 대처</h3>
+<table>
+<thead>
+<tr>
+<th>증상</th>
+<th>흔한 원인</th>
+<th>확인·조치</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DAG가 UI에 안 보임</td>
+<td>Import Error, 번들 미갱신, 파일에 <code>dag</code> 단어 없음(safe mode)</td>
+<td><code>airflow dags list-import-errors</code>, dag-processor 로그</td>
+</tr>
+<tr>
+<td>태스크가 scheduled/queued에 머묾</td>
+<td>Pool 슬롯 부족, 워커 다운, 큐 이름 불일치</td>
+<td>Pool 화면, 워커 로그, <code>queue=</code> 값</td>
+</tr>
+<tr>
+<td>running인데 진행 없음</td>
+<td>외부 잡 행, JWT 불일치, 워커 OOM</td>
+<td><code>execution_timeout</code> 설정, 워커 Pod 이벤트</td>
+</tr>
+<tr>
+<td>deferred에서 멈춤</td>
+<td>Triggerer 다운, 트리거 안에서 블로킹 I/O</td>
+<td>triggerer 로그, <code>runner_health_check_threshold</code></td>
+</tr>
+<tr>
+<td>같은 구간 데이터 중복</td>
+<td>비멱등 쓰기(<code>INSERT INTO</code>) + 재시도</td>
+<td>OVERWRITE/MERGE로 전환</td>
+</tr>
+<tr>
+<td>스케줄러가 느려짐</td>
+<td>파싱 무거움, 매핑 태스크 과다, 메타 DB 비대</td>
+<td><code>dags report</code>, <code>airflow db clean</code> 정기 실행</td>
+</tr>
+<tr>
+<td>재실행했는데 옛 코드로 돎</td>
+<td>번들 버전 고정(기본 동작)</td>
+<td>clear 시 "latest version" 선택</td>
+</tr>
+</tbody>
+</table>
+<h3 id="46-db">4.6 메타 DB 관리</h3>
+<p>메타 DB가 커지면 UI와 스케줄러가 함께 느려집니다. 오래된 기록은 주기적으로 정리합니다.</p>
+<div class="code"><div class="lang">bash</div><div class="hl"><pre><span></span><span class="c1"># 90일 이전의 실행 이력을 메타 DB에서 삭제</span>
+<span class="c1">#   --clean-before-timestamp : 이 시각 이전 레코드가 대상</span>
+<span class="c1">#   --tables                 : 정리할 테이블. 지정하지 않으면 정리 가능한 전체 테이블</span>
+<span class="c1">#   --skip-archive           : 삭제 전 _airflow_deleted__ 접두사 테이블로 백업하지 않음 (공간 절약)</span>
+<span class="c1">#   --dry-run                : 실제 삭제 없이 건수만 출력 → 처음에는 반드시 이것부터</span>
+<span class="c1">#   --yes                    : 확인 프롬프트 생략 (DAG·cron에서 실행할 때)</span>
+airflow<span class="w"> </span>db<span class="w"> </span>clean<span class="w"> </span>--clean-before-timestamp<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>date<span class="w"> </span>-d<span class="w"> </span><span class="s1">'-90 days'</span><span class="w"> </span>+%F<span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--tables<span class="w"> </span>dag_run,task_instance,log,xcom,job<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--skip-archive<span class="w"> </span>--yes
+<span class="c1"># 주의: 삭제된 Run은 UI 이력에서 사라지고 clear로 재실행할 수도 없다. 보존 기간은 팀과 합의할 것</span>
+</pre></div>
+</div>
+<p>이 명령 자체를 유지보수 DAG로 만들어 주 1회 돌리는 것이 일반적입니다.</p>
+<h3 id="47">4.7 안티패턴 요약</h3>
+<ul>
+<li>최상위 코드에서 <code>Variable.get()</code>, DB 조회, API 호출</li>
+<li>XCom으로 DataFrame·대용량 JSON 전달</li>
+<li>Airflow 워커에서 pandas로 수 GB 처리 (연산은 Spark/StarRocks로)</li>
+<li><code>start_date=datetime.now()</code>, 동적으로 바뀌는 <code>dag_id</code></li>
+<li><code>poke</code> 모드 센서 수십 개 상시 대기</li>
+<li>태스크 하나에 추출·변환·적재 전부 몰아넣기 (재실행 단위가 너무 큼)</li>
+<li>반대로 SQL 한 줄마다 태스크 분리 (스케줄 오버헤드가 작업보다 큼)</li>
+</ul>
+<h2 id="5-cicd">5. 테스트와 CI/CD</h2>
+<p>최소한 "모든 DAG가 에러 없이 로드되는가"는 CI에서 막아야 합니다. 운영 장애의 상당수가 import 오류와 순환 의존성 같은 로딩 단계 문제입니다.</p>
+<h3 id="51">5.1 권장 저장소 구조</h3>
+<div class="code"><div class="lang">text</div><div class="hl"><pre><span></span>data-dags/
+├── dags/                    # Git Dag Bundle의 subdir로 지정되는 폴더. 여기 있는 .py만 파싱된다
+│   ├── sales/               # 도메인(팀)별 폴더
+│   │   ├── sales_daily.py
+│   │   └── sql/merge_sales.sql   # DAG가 참조하는 SQL은 DAG 옆에
+│   └── common/              # 여러 DAG가 공유하는 코드 (DAG 정의는 두지 않음)
+│       ├── assets.py        # Asset URI 상수 — 생산자·소비자가 같은 객체를 import
+│       └── alerts.py        # 공용 실패 알림 콜백
+├── spark_jobs/              # Spark 애플리케이션 코드. DAG와 별도로 빌드·배포
+├── tests/
+│   ├── test_dag_integrity.py    # 모든 DAG 로딩 + 공통 규칙 검사
+│   └── test_sales_logic.py      # 순수 비즈니스 로직 단위 테스트
+├── pyproject.toml           # ruff·pytest 설정
+└── .github/workflows/ci.yml
+</pre></div>
+</div>
+<p>Asset URI와 Pool 이름처럼 여러 DAG가 공유하는 상수는 <code>common/</code>에 모아 오타로 인한 "연결 안 됨" 사고를 막습니다.</p>
+<h3 id="52-dag">5.2 DAG 무결성 테스트</h3>
+<div class="code"><div class="lang">python</div><div class="hl"><pre><span></span><span class="c1"># tests/test_dag_integrity.py</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">airflow.dag_processing.dagbag</span><span class="w"> </span><span class="kn">import</span> <span class="n">DagBag</span>
+
+<span class="c1"># DagBag: 폴더의 DAG 파일을 DAG Processor와 같은 방식으로 import 해서 모은 객체.</span>
+<span class="c1"># scope="session": 파싱은 느리므로 테스트 전체에서 한 번만 수행</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s2">"session"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dagbag</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">DagBag</span><span class="p">(</span><span class="n">dag_folder</span><span class="o">=</span><span class="s2">"dags"</span><span class="p">,</span> <span class="n">include_examples</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_no_import_errors</span><span class="p">(</span><span class="n">dagbag</span><span class="p">):</span>
+    <span class="c1"># import_errors: {파일 경로: 에러 메시지}. 문법 오류, 없는 모듈, 순환 의존성 등이 여기 잡힌다</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">dagbag</span><span class="o">.</span><span class="n">import_errors</span><span class="p">,</span> <span class="n">dagbag</span><span class="o">.</span><span class="n">import_errors</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_required_attrs</span><span class="p">(</span><span class="n">dagbag</span><span class="p">):</span>
+    <span class="c1"># 팀 규칙을 코드로 강제하는 테스트. 리뷰에서 매번 지적할 필요가 없어진다</span>
+    <span class="k">for</span> <span class="n">dag_id</span><span class="p">,</span> <span class="n">dag</span> <span class="ow">in</span> <span class="n">dagbag</span><span class="o">.</span><span class="n">dags</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">assert</span> <span class="n">dag</span><span class="o">.</span><span class="n">tags</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">dag_id</span><span class="si">}</span><span class="s2">: tags 누락"</span>
+        <span class="k">assert</span> <span class="n">dag</span><span class="o">.</span><span class="n">owner</span> <span class="o">!=</span> <span class="s2">"airflow"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">dag_id</span><span class="si">}</span><span class="s2">: owner 지정 필요"</span>   <span class="c1"># "airflow"는 기본값 = 안 적었다는 뜻</span>
+        <span class="k">assert</span> <span class="n">dag</span><span class="o">.</span><span class="n">max_active_runs</span> <span class="o">&lt;=</span> <span class="mi">4</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">dag_id</span><span class="si">}</span><span class="s2">: max_active_runs 과다"</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">dag</span><span class="o">.</span><span class="n">tasks</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">t</span><span class="o">.</span><span class="n">retries</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">dag_id</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">t</span><span class="o">.</span><span class="n">task_id</span><span class="si">}</span><span class="s2">: retries 없음"</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_parse_time</span><span class="p">(</span><span class="n">dagbag</span><span class="p">):</span>
+    <span class="c1"># 파일당 파싱 시간 상한. 넘으면 최상위 코드에서 무거운 일을 하고 있을 가능성이 높다</span>
+    <span class="k">for</span> <span class="n">stat</span> <span class="ow">in</span> <span class="n">dagbag</span><span class="o">.</span><span class="n">dagbag_stats</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">stat</span><span class="o">.</span><span class="n">duration</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">file</span>
+</pre></div>
+</div>
+<blockquote>
+<p>DagBag import 경로와 반환 구조는 3.2에서 변경되었습니다. 설치 버전에서 한 번 확인하고 고정하십시오. 공통 규칙(owner, tags, retries)은 Cluster Policy로 운영 측에서 강제할 수도 있습니다.</p>
+</blockquote>
+<h3 id="53">5.3 로직 단위 테스트</h3>
+<p>TaskFlow 태스크는 <code>.function</code>으로 원본 함수를 꺼내 순수 함수처럼 테스트합니다. 그래서 비즈니스 로직은 태스크 밖의 일반 함수로 빼두는 편이 좋습니다.</p>
+<div class="code"><div class="lang">python</div><div class="hl"><pre><span></span><span class="c1"># tests/test_sales_logic.py</span>
+<span class="c1"># Airflow 없이 돌아가는 순수 함수 테스트. 빠르고 CI에서 불안정하지 않다</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pendulum</span>
+<span class="c1"># 로직은 태스크 밖의 일반 함수로 분리해 두고, 태스크는 이 함수를 호출만 하게 설계한다</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dags.sales.sales_daily</span><span class="w"> </span><span class="kn">import</span> <span class="n">build_partition_path</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_partition_path</span><span class="p">():</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="s2">"Asia/Seoul"</span><span class="p">)</span>
+    <span class="c1"># 구간 시작 → 파티션 경로 변환이 맞는지 확인 (타임존 실수가 잦은 부분)</span>
+    <span class="k">assert</span> <span class="n">build_partition_path</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"s3://lake/raw/sales/dt=2026-09-21"</span>
+</pre></div>
+</div>
+<p>DAG 전체 흐름은 <code>dag.test()</code>로 로컬 실행해 확인합니다. 외부 시스템은 dev Connection으로 바꿔 끼웁니다.</p>
+<div class="code"><div class="lang">python</div><div class="hl"><pre><span></span><span class="c1"># DAG 파일 맨 아래에 두면 `python dags/sales/sales_daily.py`로 DAG 전체를 로컬 실행할 수 있다.</span>
+<span class="c1"># 스케줄러·워커 없이 한 프로세스에서 태스크를 순서대로 돌리며, IDE 디버거 브레이크포인트도 걸린다.</span>
+<span class="c1"># DAG Processor가 import 할 때는 __name__이 "__main__"이 아니므로 실행되지 않는다.</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">sales_daily</span><span class="p">()</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">logical_date</span><span class="o">=</span><span class="n">pendulum</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">21</span><span class="p">))</span>
+</pre></div>
+</div>
+<h3 id="54-airflow-3">5.4 린트: Airflow 3 규칙</h3>
+<p>ruff에 Airflow 전용 규칙(AIR)이 있어 2.x 스타일 import와 제거된 API를 잡아줍니다.</p>
+<div class="code"><div class="lang">toml</div><div class="hl"><pre><span></span><span class="c1"># pyproject.toml</span>
+<span class="k">[tool.ruff.lint]</span>
+<span class="c1"># AIR 규칙군: Airflow 전용 린트</span>
+<span class="c1">#   AIR0xx: 일반 권장 사항</span>
+<span class="c1">#   AIR3xx: Airflow 3에서 제거·이동된 API 사용 탐지 (2.x 코드 이관 시 핵심)</span>
+<span class="n">extend-select</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"AIR"</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="code"><div class="lang">bash</div><div class="hl"><pre><span></span><span class="c1"># Airflow 3 호환성 규칙만 골라 검사. 2.x DAG를 옮길 때 가장 먼저 돌려 볼 명령</span>
+ruff<span class="w"> </span>check<span class="w"> </span>dags/<span class="w"> </span>--select<span class="w"> </span>AIR3
+<span class="c1"># 일부는 --fix로 import 경로를 자동 수정할 수 있다</span>
+</pre></div>
+</div>
+<h3 id="55-ci">5.5 CI 파이프라인 예시</h3>
+<div class="code"><div class="lang">yaml</div><div class="hl"><pre><span></span><span class="c1"># .github/workflows/ci.yml</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dags-ci</span>
+<span class="nt">on</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">pull_request</span><span class="p p-Indicator">]</span><span class="w">                 </span><span class="c1"># PR마다 실행. main 병합 전에 막는 것이 목적</span>
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">test</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="c1"># 운영과 같은 이미지에서 테스트해야 provider·라이브러리 버전 차이로 인한 사고가 없다</span>
+<span class="w">    </span><span class="nt">container</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">registry.internal/airflow:3.3.2-20260920</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ruff check dags/ --select AIR,E,F</span><span class="w">    </span><span class="c1"># Airflow 규칙 + 문법 오류(E) + 미사용/미정의 이름(F)</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">airflow db migrate</span><span class="w">                    </span><span class="c1"># DagBag 파싱에 필요한 임시 메타 DB(SQLite) 생성</span>
+<span class="w">        </span><span class="nt">env</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">AIRFLOW__CORE__LOAD_EXAMPLES</span><span class="p">:</span><span class="w"> </span><span class="s">"False"</span><span class="p p-Indicator">}</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pytest -q tests/</span>
+</pre></div>
+</div>
+<p>배포는 main 병합이 곧 배포입니다. Git Dag Bundle이 <code>tracking_ref=main</code>을 주기적으로 당겨오므로 별도 배포 단계가 없습니다. stg 환경은 <code>tracking_ref=develop</code>인 번들을 가진 별도 Airflow로 운영합니다.</p>
+<h2 id="_1">참고 자료</h2>
+<ul>
+<li><a href="https://airflow.apache.org/docs/apache-airflow/3.3.0/release_notes.html">Airflow 3.3.0 Release Notes</a></li>
+<li><a href="https://airflow.apache.org/announcements/">Airflow Announcements (3.3.2)</a></li>
+<li><a href="https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/dag-bundles.html">Airflow Dag Bundles</a></li>
+</ul></main><div class="mermaidTooltip" style="opacity: 0; position: absolute; text-align: center; max-width: 200px; padding: 2px; font-size: 12px; background: rgb(255, 255, 222); border: 1px solid rgb(51, 51, 51); border-radius: 2px; pointer-events: none; z-index: 100;"></div></body></html>
