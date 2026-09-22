@@ -1,0 +1,587 @@
+<!doctype html>
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Airflow 첫걸음</title><style>pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.hl .hll { background-color: #ffffcc }
+.hl { background: #f0f0f0; }
+.hl .c { color: #60A0B0; font-style: italic } /* Comment */
+.hl .err { border: 1px solid #F00 } /* Error */
+.hl .k { color: #007020; font-weight: bold } /* Keyword */
+.hl .o { color: #666 } /* Operator */
+.hl .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+.hl .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+.hl .cp { color: #007020 } /* Comment.Preproc */
+.hl .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+.hl .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+.hl .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+.hl .gd { color: #A00000 } /* Generic.Deleted */
+.hl .ge { font-style: italic } /* Generic.Emph */
+.hl .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.hl .gr { color: #F00 } /* Generic.Error */
+.hl .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.hl .gi { color: #00A000 } /* Generic.Inserted */
+.hl .go { color: #888 } /* Generic.Output */
+.hl .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+.hl .gs { font-weight: bold } /* Generic.Strong */
+.hl .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.hl .gt { color: #04D } /* Generic.Traceback */
+.hl .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+.hl .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+.hl .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+.hl .kp { color: #007020 } /* Keyword.Pseudo */
+.hl .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+.hl .kt { color: #902000 } /* Keyword.Type */
+.hl .m { color: #40A070 } /* Literal.Number */
+.hl .s { color: #4070A0 } /* Literal.String */
+.hl .na { color: #4070A0 } /* Name.Attribute */
+.hl .nb { color: #007020 } /* Name.Builtin */
+.hl .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+.hl .no { color: #60ADD5 } /* Name.Constant */
+.hl .nd { color: #555; font-weight: bold } /* Name.Decorator */
+.hl .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+.hl .ne { color: #007020 } /* Name.Exception */
+.hl .nf { color: #06287E } /* Name.Function */
+.hl .nl { color: #002070; font-weight: bold } /* Name.Label */
+.hl .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+.hl .nt { color: #062873; font-weight: bold } /* Name.Tag */
+.hl .nv { color: #BB60D5 } /* Name.Variable */
+.hl .ow { color: #007020; font-weight: bold } /* Operator.Word */
+.hl .w { color: #BBB } /* Text.Whitespace */
+.hl .mb { color: #40A070 } /* Literal.Number.Bin */
+.hl .mf { color: #40A070 } /* Literal.Number.Float */
+.hl .mh { color: #40A070 } /* Literal.Number.Hex */
+.hl .mi { color: #40A070 } /* Literal.Number.Integer */
+.hl .mo { color: #40A070 } /* Literal.Number.Oct */
+.hl .sa { color: #4070A0 } /* Literal.String.Affix */
+.hl .sb { color: #4070A0 } /* Literal.String.Backtick */
+.hl .sc { color: #4070A0 } /* Literal.String.Char */
+.hl .dl { color: #4070A0 } /* Literal.String.Delimiter */
+.hl .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+.hl .s2 { color: #4070A0 } /* Literal.String.Double */
+.hl .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+.hl .sh { color: #4070A0 } /* Literal.String.Heredoc */
+.hl .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+.hl .sx { color: #C65D09 } /* Literal.String.Other */
+.hl .sr { color: #235388 } /* Literal.String.Regex */
+.hl .s1 { color: #4070A0 } /* Literal.String.Single */
+.hl .ss { color: #517918 } /* Literal.String.Symbol */
+.hl .bp { color: #007020 } /* Name.Builtin.Pseudo */
+.hl .fm { color: #06287E } /* Name.Function.Magic */
+.hl .vc { color: #BB60D5 } /* Name.Variable.Class */
+.hl .vg { color: #BB60D5 } /* Name.Variable.Global */
+.hl .vi { color: #BB60D5 } /* Name.Variable.Instance */
+.hl .vm { color: #BB60D5 } /* Name.Variable.Magic */
+.hl .il { color: #40A070 } /* Literal.Number.Integer.Long */
+:root { --fg:#1f2328; --muted:#59636e; --line:#d1d9e0; --bg:#ffffff; --code:#f6f8fa; --accent:#0969da; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--fg);
+  font-family: "Pretendard", "Noto Sans CJK KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  font-size: 15px; line-height: 1.7; }
+main { max-width: 920px; margin: 0 auto; padding: 40px 24px 80px; }
+h1 { font-size: 30px; margin: 0 0 4px; }
+h1 + p { color: var(--muted); margin-top: 0; }
+h2 { font-size: 22px; margin: 48px 0 12px; padding-bottom: 6px; border-bottom: 2px solid var(--line); }
+h3 { font-size: 17px; margin: 32px 0 8px; }
+p, li { word-break: keep-all; }
+a { color: var(--accent); }
+code { font-family: "JetBrains Mono", "D2Coding", "Noto Sans Mono CJK KR", Menlo, Consolas, monospace; font-size: 0.88em; }
+p code, li code, td code { background: var(--code); padding: 1px 5px; border-radius: 4px; }
+table { border-collapse: collapse; width: 100%; margin: 12px 0 20px; font-size: 14px; }
+th, td { border: 1px solid var(--line); padding: 6px 10px; vertical-align: top; text-align: left; }
+th { background: var(--code); }
+blockquote { margin: 16px 0; padding: 8px 16px; border-left: 4px solid #d4a72c; background: #fff8c5; border-radius: 0 6px 6px 0; }
+blockquote p { margin: 4px 0; }
+.code { position: relative; margin: 14px 0 20px; border: 1px solid var(--line); border-radius: 8px; background: var(--code); overflow: hidden; }
+.code .lang { position: absolute; top: 0; right: 0; font: 11px/1 monospace; color: var(--muted); background: #eaeef2; padding: 4px 8px; border-bottom-left-radius: 6px; text-transform: uppercase; }
+.hl { background: transparent !important; }
+.hl pre { margin: 0; padding: 14px 16px; overflow-x: auto; font-size: 13px; line-height: 1.55; white-space: pre; }
+.mermaid-wrap { margin: 16px 0 20px; text-align: center; }
+@media print {
+  main { max-width: none; padding: 0; }
+  .hl pre { white-space: pre-wrap; word-break: break-all; font-size: 11.5px; }
+  blockquote, .mermaid-wrap, tr { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+}
+</style></head>
+<body><main><h1 id="airflow">Airflow 첫걸음: 완전 초보 입문서</h1>
+<p>2026-09-22 · Imm</p>
+<p>Airflow를 처음 만지는 사람이 하루 안에 "내 작업을 Airflow에 올려서 돌려 봤다"까지 가는 것이 목표입니다. 어려운 용어와 운영 설정은 빼고, 꼭 필요한 것만 순서대로 다룹니다.</p>
+<h2 id="1-airflow">1. Airflow가 뭔가요?</h2>
+<p>한 줄 정의: <strong>Airflow는 "정해진 순서대로, 정해진 시간에, 일을 시키고 결과를 기록하는" 작업 관리자</strong>입니다.</p>
+<p>식당 주방에 비유해 보겠습니다.</p>
+<table>
+<thead>
+<tr>
+<th>주방</th>
+<th>Airflow</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>레시피 (재료 손질 → 볶기 → 담기)</td>
+<td><strong>DAG</strong>: 작업 순서를 적은 파이썬 파일</td>
+</tr>
+<tr>
+<td>레시피의 한 단계 ("양파 썰기")</td>
+<td><strong>Task</strong>: 순서 속 작업 하나</td>
+</tr>
+<tr>
+<td>주방장 (언제 무엇을 시작할지 결정)</td>
+<td><strong>Scheduler</strong></td>
+</tr>
+<tr>
+<td>요리사 (실제로 손을 움직임)</td>
+<td><strong>Worker</strong></td>
+</tr>
+<tr>
+<td>주방 모니터 (어느 요리가 어디까지 됐는지)</td>
+<td><strong>웹 화면(UI)</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="cron-airflow">왜 cron 대신 Airflow를 쓰나요?</h3>
+<p>cron으로도 "매일 새벽 2시에 스크립트 실행"은 됩니다. 하지만 일이 여러 개로 늘어나면 곧 이런 질문에 답하기 어려워집니다.</p>
+<ul>
+<li>A가 끝난 <strong>다음에</strong> B를 돌리고 싶다</li>
+<li>어젯밤 작업이 <strong>실패했는지</strong> 아침에 한눈에 보고 싶다</li>
+<li>실패하면 <strong>자동으로 몇 번 다시</strong> 시도했으면 좋겠다</li>
+<li>지난주 3일치를 <strong>다시 돌리고</strong> 싶다</li>
+</ul>
+<p>Airflow는 이 네 가지를 기본으로 해 줍니다.</p>
+<blockquote>
+<p>꼭 기억할 것: Airflow는 <strong>일을 시키는 쪽</strong>이지 <strong>일을 하는 쪽</strong>이 아닙니다. 대용량 데이터 처리는 Spark나 DB에 맡기고, Airflow는 "언제, 어떤 순서로"만 관리하는 것이 올바른 사용법입니다.</p>
+</blockquote>
+<h2 id="2-6">2. 꼭 알아야 할 단어 6개</h2>
+<p>처음에는 이 여섯 개만 알면 됩니다. 나머지 용어는 필요할 때 찾아보세요.</p>
+<table>
+<thead>
+<tr>
+<th>단어</th>
+<th>뜻</th>
+<th>예</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>DAG</strong></td>
+<td>작업 묶음과 그 순서. 파이썬 파일 하나로 작성</td>
+<td>"매출 집계" 작업 전체</td>
+</tr>
+<tr>
+<td><strong>Task</strong></td>
+<td>DAG 안의 작업 한 조각</td>
+<td>"데이터 내려받기", "합계 내기"</td>
+</tr>
+<tr>
+<td><strong>Operator</strong></td>
+<td>Task를 만드는 틀. 무엇을 실행할지의 종류</td>
+<td>파이썬 함수 실행, 리눅스 명령 실행, SQL 실행</td>
+</tr>
+<tr>
+<td><strong>스케줄</strong></td>
+<td>DAG를 언제 돌릴지</td>
+<td>매일 새벽 2시, 매시간, 사람이 버튼 눌렀을 때만</td>
+</tr>
+<tr>
+<td><strong>Run</strong> (DAG Run)</td>
+<td>DAG를 한 번 실행한 것</td>
+<td>"9월 22일 새벽 2시 실행분"</td>
+</tr>
+<tr>
+<td><strong>로그</strong></td>
+<td>Task가 실행되며 출력한 기록</td>
+<td><code>print()</code> 내용, 에러 메시지</td>
+</tr>
+</tbody>
+</table>
+<p>관계를 그림으로 보면 이렇습니다. 화살표는 "앞이 끝나야 뒤가 시작된다"는 뜻입니다.</p>
+<div class="mermaid-wrap"><pre class="mermaid" data-processed="true"><svg id="mermaid-1790084361859" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="flowchart" style="max-width: 525.796875px;" viewBox="0 0 525.796875 94" role="graphics-document document" aria-roledescription="flowchart-v2"><style>#mermaid-1790084361859{font-family:Noto Sans CJK KR,sans-serif;font-size:16px;fill:#000000;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#mermaid-1790084361859 .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#mermaid-1790084361859 .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#mermaid-1790084361859 .error-icon{fill:#552222;}#mermaid-1790084361859 .error-text{fill:#552222;stroke:#552222;}#mermaid-1790084361859 .edge-thickness-normal{stroke-width:1px;}#mermaid-1790084361859 .edge-thickness-thick{stroke-width:3.5px;}#mermaid-1790084361859 .edge-pattern-solid{stroke-dasharray:0;}#mermaid-1790084361859 .edge-thickness-invisible{stroke-width:0;fill:none;}#mermaid-1790084361859 .edge-pattern-dashed{stroke-dasharray:3;}#mermaid-1790084361859 .edge-pattern-dotted{stroke-dasharray:2;}#mermaid-1790084361859 .marker{fill:#666;stroke:#666;}#mermaid-1790084361859 .marker.cross{stroke:#666;}#mermaid-1790084361859 svg{font-family:Noto Sans CJK KR,sans-serif;font-size:16px;}#mermaid-1790084361859 p{margin:0;}#mermaid-1790084361859 .label{font-family:Noto Sans CJK KR,sans-serif;color:#000000;}#mermaid-1790084361859 .cluster-label text{fill:#333;}#mermaid-1790084361859 .cluster-label span{color:#333;}#mermaid-1790084361859 .cluster-label span p{background-color:transparent;}#mermaid-1790084361859 .label text,#mermaid-1790084361859 span{fill:#000000;color:#000000;}#mermaid-1790084361859 .node rect,#mermaid-1790084361859 .node circle,#mermaid-1790084361859 .node ellipse,#mermaid-1790084361859 .node polygon,#mermaid-1790084361859 .node path{fill:#eee;stroke:#999;stroke-width:1px;}#mermaid-1790084361859 .rough-node .label text,#mermaid-1790084361859 .node .label text,#mermaid-1790084361859 .image-shape .label,#mermaid-1790084361859 .icon-shape .label{text-anchor:middle;}#mermaid-1790084361859 .node .katex path{fill:#000;stroke:#000;stroke-width:1px;}#mermaid-1790084361859 .rough-node .label,#mermaid-1790084361859 .node .label,#mermaid-1790084361859 .image-shape .label,#mermaid-1790084361859 .icon-shape .label{text-align:center;}#mermaid-1790084361859 .node.clickable{cursor:pointer;}#mermaid-1790084361859 .root .anchor path{fill:#666!important;stroke-width:0;stroke:#666;}#mermaid-1790084361859 .arrowheadPath{fill:#333333;}#mermaid-1790084361859 .edgePaths .path{stroke:#666;stroke-width:1px;}#mermaid-1790084361859 .flowchart-link{stroke:#666;fill:none;}#mermaid-1790084361859 .edgeLabel{background-color:white;text-align:center;}#mermaid-1790084361859 .edgeLabel p{background-color:white;}#mermaid-1790084361859 .edgeLabel rect{opacity:0.5;background-color:white;fill:white;}#mermaid-1790084361859 .labelBkg{background-color:rgba(255, 255, 255, 0.5);}#mermaid-1790084361859 .cluster rect{fill:hsl(0, 0%, 98.9215686275%);stroke:#707070;stroke-width:1px;}#mermaid-1790084361859 .cluster text{fill:#333;}#mermaid-1790084361859 .cluster span{color:#333;}#mermaid-1790084361859 .node .collapsed-indicator{fill:#707070;stroke:none;opacity:0.6;}#mermaid-1790084361859 .node .collapsed-separator{stroke:#707070;stroke-width:0.75px;}#mermaid-1790084361859 div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-family:Noto Sans CJK KR,sans-serif;font-size:12px;background:hsl(-160, 0%, 93.3333333333%);border:1px solid #707070;border-radius:2px;pointer-events:none;z-index:100;}#mermaid-1790084361859 .flowchartTitleText{text-anchor:middle;font-size:18px;fill:#000000;}#mermaid-1790084361859 rect.text{fill:none;stroke-width:0;}#mermaid-1790084361859 .icon-shape,#mermaid-1790084361859 .image-shape{background-color:white;text-align:center;}#mermaid-1790084361859 .icon-shape p,#mermaid-1790084361859 .image-shape p{background-color:white;padding:2px;}#mermaid-1790084361859 .icon-shape .label rect,#mermaid-1790084361859 .image-shape .label rect{opacity:0.5;background-color:white;fill:white;}#mermaid-1790084361859 .label-icon{display:inline-block;height:1em;overflow:visible;vertical-align:-0.125em;}#mermaid-1790084361859 .node .label-icon path{fill:currentColor;stroke:revert;stroke-width:revert;}#mermaid-1790084361859 .node .neo-node{stroke:#999;}#mermaid-1790084361859 [data-look="neo"].node rect,#mermaid-1790084361859 [data-look="neo"].cluster rect,#mermaid-1790084361859 [data-look="neo"].node polygon{stroke:url(#mermaid-1790084361859-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#mermaid-1790084361859 [data-look="neo"].swimlane.cluster rect{filter:none;}#mermaid-1790084361859 [data-look="neo"].node path{stroke:url(#mermaid-1790084361859-gradient);stroke-width:1px;}#mermaid-1790084361859 [data-look="neo"].node .outer-path{filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#mermaid-1790084361859 [data-look="neo"].node .neo-line path{stroke:#999;filter:none;}#mermaid-1790084361859 [data-look="neo"].node circle{stroke:url(#mermaid-1790084361859-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#mermaid-1790084361859 [data-look="neo"].node circle .state-start{fill:#000000;}#mermaid-1790084361859 [data-look="neo"].icon-shape .icon{fill:url(#mermaid-1790084361859-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#mermaid-1790084361859 [data-look="neo"].icon-shape .icon-neo path{stroke:url(#mermaid-1790084361859-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#mermaid-1790084361859 :root{--mermaid-font-family:Noto Sans CJK KR,sans-serif;}</style><g><marker id="mermaid-1790084361859_flowchart-v2-pointEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1790084361859_flowchart-v2-pointStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="4.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 5 L 10 10 L 10 0 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1790084361859_flowchart-v2-pointEnd-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="11.5" refY="7" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="14" orient="auto"><path d="M 0 0 L 11.5 7 L 0 14 z" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1790084361859_flowchart-v2-pointStart-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="1" refY="7" markerUnits="userSpaceOnUse" markerWidth="11.5" markerHeight="14" orient="auto"><polygon points="0,7 11.5,14 11.5,0" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></polygon></marker><marker id="mermaid-1790084361859_flowchart-v2-circleEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="11" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="mermaid-1790084361859_flowchart-v2-circleStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-1" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="mermaid-1790084361859_flowchart-v2-circleEnd-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refY="5" refX="12.25" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="mermaid-1790084361859_flowchart-v2-circleStart-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-2" refY="5" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="mermaid-1790084361859_flowchart-v2-crossEnd" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="12" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1790084361859_flowchart-v2-crossStart" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="-1" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1790084361859_flowchart-v2-crossEnd-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="17.7" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5;"></path></marker><marker id="mermaid-1790084361859_flowchart-v2-crossStart-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="-3.5" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5; stroke-dasharray: 1, 0;"></path></marker><g class="root"><g class="clusters"></g><g class="edgePaths"><path d="M175.531,47L179.698,47C183.865,47,192.198,47,199.865,47C207.531,47,214.531,47,218.031,47L221.531,47" id="mermaid-1790084361859-L_A_B_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_A_B_0" data-points="W3sieCI6MTc1LjUzMTI1LCJ5Ijo0N30seyJ4IjoyMDAuNTMxMjUsInkiOjQ3fSx7IngiOjIyNS41MzEyNSwieSI6NDd9XQ==" data-look="classic" marker-end="url(#mermaid-1790084361859_flowchart-v2-pointEnd)"></path><path d="M344.422,47L348.589,47C352.755,47,361.089,47,368.755,47C376.422,47,383.422,47,386.922,47L390.422,47" id="mermaid-1790084361859-L_B_C_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_B_C_0" data-points="W3sieCI6MzQ0LjQyMTg3NSwieSI6NDd9LHsieCI6MzY5LjQyMTg3NSwieSI6NDd9LHsieCI6Mzk0LjQyMTg3NSwieSI6NDd9XQ==" data-look="classic" marker-end="url(#mermaid-1790084361859_flowchart-v2-pointEnd)"></path></g><g class="edgeLabels"><g class="edgeLabel"><g class="label" data-id="L_A_B_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_B_C_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g></g><g class="nodes"><g class="node default" id="mermaid-1790084361859-flowchart-A-0" data-look="classic" transform="translate(91.765625, 47)"><rect class="basic label-container" style="" x="-83.765625" y="-39" width="167.53125" height="78"></rect><g class="label" style="" transform="translate(-53.765625, -24)"><rect></rect><foreignObject width="107.53125" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="nodeLabel"><p>데이터 내려받기<br>Task</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1790084361859-flowchart-B-1" data-look="classic" transform="translate(284.9765625, 47)"><rect class="basic label-container" style="" x="-59.4453125" y="-39" width="118.890625" height="78"></rect><g class="label" style="" transform="translate(-29.4453125, -24)"><rect></rect><foreignObject width="58.890625" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="nodeLabel"><p>정리하기<br>Task</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1790084361859-flowchart-C-2" data-look="classic" transform="translate(456.109375, 47)"><rect class="basic label-container" style="" x="-61.6875" y="-39" width="123.375" height="78"></rect><g class="label" style="" transform="translate(-31.6875, -24)"><rect></rect><foreignObject width="63.375" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="nodeLabel"><p>합계 내기<br>Task</p></span></div></foreignObject></g></g></g></g></g><defs><filter id="mermaid-1790084361859-drop-shadow" height="130%" width="130%"><feDropShadow dx="4" dy="4" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"></feDropShadow></filter></defs><defs><filter id="mermaid-1790084361859-drop-shadow-small" height="150%" width="150%"><feDropShadow dx="2" dy="2" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"></feDropShadow></filter></defs><linearGradient id="mermaid-1790084361859-gradient" gradientUnits="objectBoundingBox" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="hsl(0, 0%, 83.3333333333%)" stop-opacity="1"></stop><stop offset="100%" stop-color="hsl(0, 0%, 88.9215686275%)" stop-opacity="1"></stop></linearGradient></svg></pre></div>
+<p>이 세 개의 네모와 화살표를 통틀어 <strong>DAG</strong> 하나라고 부릅니다. DAG는 "방향이 있고 되돌아가는 고리가 없는 그래프(Directed Acyclic Graph)"의 줄임말인데, "C가 끝나면 다시 A로" 같은 무한 반복은 만들 수 없다는 정도만 알면 충분합니다.</p>
+<h2 id="3">3. 내 컴퓨터에 설치하고 화면 열기</h2>
+<p>연습용으로는 <code>airflow standalone</code> 명령 하나면 충분합니다. 필요한 구성 요소를 한 번에 띄워 줍니다. 회사 서버에는 이미 설치돼 있을 테니, 이 장은 "내 노트북에서 자유롭게 망가뜨리며 연습하는 환경" 만들기입니다.</p>
+<p>준비물: macOS 또는 Linux, Python 3.10 이상. Windows라면 WSL2(윈도우 안의 리눅스)에서 하세요. Airflow는 Windows에서 직접 돌지 않습니다.</p>
+<h3 id="31">3.1 설치</h3>
+<div class="code"><div class="lang">bash</div><div class="hl"><pre><span></span><span class="c1"># 1) 연습용 폴더를 만들고 들어간다</span>
+mkdir<span class="w"> </span>airflow-practice<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>airflow-practice
+
+<span class="c1"># 2) 가상환경 만들기: 이 폴더 전용 파이썬 환경 (다른 프로젝트와 섞이지 않게)</span>
+python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+<span class="nb">source</span><span class="w"> </span>.venv/bin/activate<span class="w">        </span><span class="c1"># 프롬프트 앞에 (.venv)가 보이면 성공</span>
+
+<span class="c1"># 3) Airflow가 자기 파일을 둘 위치를 이 폴더로 지정</span>
+<span class="c1">#    (지정 안 하면 ~/airflow 가 쓰인다)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">AIRFLOW_HOME</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>
+
+<span class="c1"># 4) 설치. --constraint는 "이 버전과 잘 맞는 라이브러리 버전 목록"이다.</span>
+<span class="c1">#    빼면 설치는 되더라도 실행 중에 이상한 에러가 나기 쉽다.</span>
+<span class="nv">AIRFLOW_VERSION</span><span class="o">=</span><span class="m">3</span>.3.2
+<span class="nv">PYTHON_VERSION</span><span class="o">=</span><span class="k">$(</span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s1">'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")'</span><span class="k">)</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"apache-airflow==</span><span class="si">${</span><span class="nv">AIRFLOW_VERSION</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--constraint<span class="w"> </span><span class="s2">"https://raw.githubusercontent.com/apache/airflow/constraints-</span><span class="si">${</span><span class="nv">AIRFLOW_VERSION</span><span class="si">}</span><span class="s2">/constraints-</span><span class="si">${</span><span class="nv">PYTHON_VERSION</span><span class="si">}</span><span class="s2">.txt"</span>
+</pre></div>
+</div>
+<h3 id="32">3.2 실행</h3>
+<div class="code"><div class="lang">bash</div><div class="hl"><pre><span></span><span class="c1"># 예제 DAG 수십 개가 화면을 채우지 않도록 끄고 시작 (궁금하면 나중에 True로)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">AIRFLOW__CORE__LOAD_EXAMPLES</span><span class="o">=</span>False
+
+airflow<span class="w"> </span>standalone
+</pre></div>
+</div>
+<p>처음 실행하면 데이터베이스를 만드느라 1분 정도 걸립니다. 로그 사이에 <strong>로그인 비밀번호</strong>가 출력됩니다. 놓쳤다면 <code>AIRFLOW_HOME</code> 폴더의 <code>simple_auth_manager_passwords.json.generated</code> 파일에서 확인할 수 있습니다.</p>
+<p>이제 브라우저에서 <strong>http://localhost:8080</strong> 을 열고 <code>admin</code> / 출력된 비밀번호로 로그인합니다.</p>
+<h3 id="33">3.3 생긴 파일 살펴보기</h3>
+<div class="code"><div class="lang">text</div><div class="hl"><pre><span></span>airflow-practice/          ← AIRFLOW_HOME
+├── airflow.cfg            ← 설정 파일 (지금은 건드리지 않아도 됨)
+├── airflow.db             ← 실행 기록이 저장되는 DB (SQLite)
+├── logs/                  ← 태스크 로그
+└── dags/                  ← ★ 여기에 DAG 파일을 넣는다 (없으면 만들기)
+</pre></div>
+</div>
+<p><code>dags/</code> 폴더가 없다면 직접 만드세요. 이 폴더에 둔 파이썬 파일을 Airflow가 자동으로 읽어 갑니다.</p>
+<div class="code"><div class="lang">bash</div><div class="hl"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>dags
+</pre></div>
+</div>
+<blockquote>
+<p>다음 날 다시 시작할 때는 <code>cd airflow-practice &amp;&amp; source .venv/bin/activate &amp;&amp; export AIRFLOW_HOME=$(pwd)</code> 후 <code>airflow standalone</code>. 종료는 터미널에서 Ctrl+C.</p>
+</blockquote>
+<h2 id="4-dag">4. 첫 번째 DAG 만들기</h2>
+<p>"인사하고 → 숫자를 세고 → 끝났다고 말하는" 세 단계 DAG를 만들어 봅니다. 실제로는 아무 일도 하지 않지만, Airflow의 기본 동작은 전부 들어 있습니다.</p>
+<h3 id="41">4.1 파일 만들기</h3>
+<p><code>dags/hello_airflow.py</code> 파일을 만들고 아래 내용을 그대로 붙여넣습니다.</p>
+<div class="code"><div class="lang">python</div><div class="hl"><pre><span></span><span class="c1"># dags/hello_airflow.py</span>
+
+<span class="c1"># Airflow에서 DAG와 Task를 만드는 도구 2개를 가져온다</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">airflow.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">dag</span><span class="p">,</span> <span class="n">task</span>
+
+
+<span class="c1"># @dag: 바로 아래 함수가 "DAG"라고 Airflow에 알려 주는 표시</span>
+<span class="nd">@dag</span><span class="p">(</span>
+    <span class="n">dag_id</span><span class="o">=</span><span class="s2">"hello_airflow"</span><span class="p">,</span>   <span class="c1"># 화면에 표시될 이름. 영문·숫자·밑줄만</span>
+    <span class="n">schedule</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>            <span class="c1"># 자동 실행 안 함. 버튼을 눌렀을 때만 실행</span>
+    <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">"연습"</span><span class="p">],</span>           <span class="c1"># 화면에서 찾기 쉽게 붙이는 꼬리표 (생략 가능)</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello_airflow</span><span class="p">():</span>
+
+    <span class="c1"># @task: 바로 아래 함수가 "Task 하나"라는 표시</span>
+    <span class="c1">#        함수 이름(say_hello)이 곧 Task 이름이 된다</span>
+    <span class="nd">@task</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">say_hello</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"안녕하세요, Airflow!"</span><span class="p">)</span>   <span class="c1"># print한 내용은 로그에서 볼 수 있다</span>
+
+    <span class="nd">@task</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">count</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">번째 숫자"</span><span class="p">)</span>
+
+    <span class="nd">@task</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">say_bye</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"끝!"</span><span class="p">)</span>
+
+    <span class="c1"># 순서 정하기. &gt;&gt; 는 "왼쪽이 끝나면 오른쪽을 실행"</span>
+    <span class="c1"># 함수 뒤에 ()를 붙여야 Task가 만들어진다 (빼먹기 쉬움!)</span>
+    <span class="n">say_hello</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">count</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">say_bye</span><span class="p">()</span>
+
+
+<span class="c1"># 마지막으로 DAG 함수를 한 번 호출해야 Airflow가 이 DAG를 등록한다</span>
+<span class="n">hello_airflow</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>파일 구조를 한 번 더 정리하면 이렇습니다.</p>
+<ol>
+<li><code>@dag</code>를 붙인 함수 하나 = DAG 하나</li>
+<li>그 안에 <code>@task</code>를 붙인 함수들 = Task들</li>
+<li><code>&gt;&gt;</code>로 순서 연결</li>
+<li>맨 아래에서 DAG 함수 호출</li>
+</ol>
+<h3 id="42">4.2 화면에 나타나길 기다리기</h3>
+<p>파일을 저장하고 <strong>30초\~1분</strong> 뒤 브라우저를 새로고침하면 DAG 목록에 <code>hello_airflow</code>가 나타납니다. Airflow는 <code>dags/</code> 폴더를 주기적으로 다시 읽기 때문에 바로 보이지는 않습니다.</p>
+<p>1분이 지나도 안 보이면 파일에 오타가 있는 것입니다. 화면 상단에 빨간 <strong>Import Error</strong> 알림이 뜨거나, 터미널에서 직접 확인할 수 있습니다.</p>
+<div class="code"><div class="lang">bash</div><div class="hl"><pre><span></span><span class="c1"># 파이썬 문법 오류부터 확인 (아무 출력 없으면 문법은 정상)</span>
+python<span class="w"> </span>dags/hello_airflow.py
+
+<span class="c1"># Airflow가 읽다가 실패한 파일과 이유를 보여준다</span>
+airflow<span class="w"> </span>dags<span class="w"> </span>list-import-errors
+</pre></div>
+</div>
+<h3 id="43">4.3 실행하기</h3>
+<ol>
+<li>DAG 목록에서 <code>hello_airflow</code>를 클릭합니다.</li>
+<li>오른쪽 위 <strong>Trigger</strong>(▶) 버튼을 누릅니다.</li>
+<li>잠시 후 세 네모가 차례로 초록색이 되면 성공입니다.</li>
+</ol>
+<blockquote>
+<p>DAG가 회색 토글로 <strong>일시정지(Paused)</strong> 상태인지 확인하세요. 새 DAG는 기본으로 일시정지 상태로 등록될 수 있고, 이 경우 버튼을 눌러도 대기만 합니다. 토글을 켜 주세요.</p>
+</blockquote>
+<p>터미널에서 화면 없이 바로 돌려 볼 수도 있습니다. 코드를 고칠 때마다 빠르게 확인하기에 좋습니다.</p>
+<div class="code"><div class="lang">bash</div><div class="hl"><pre><span></span><span class="c1"># DAG 전체를 지금 바로 한 번 실행하고, 모든 로그를 터미널에 출력한다</span>
+airflow<span class="w"> </span>dags<span class="w"> </span><span class="nb">test</span><span class="w"> </span>hello_airflow
+</pre></div>
+</div>
+<h2 id="5">5. 화면 읽는 법</h2>
+<p>웹 화면에서 처음에 볼 곳은 세 군데뿐입니다.</p>
+<h3 id="51-dag">5.1 DAG 목록</h3>
+<p>등록된 DAG들이 한 줄씩 나오는 첫 화면입니다. 확인할 것은 두 가지입니다.</p>
+<ul>
+<li><strong>토글(켜짐/꺼짐)</strong>: 꺼져 있으면 스케줄도, 버튼 실행도 진행되지 않습니다.</li>
+<li><strong>최근 실행 상태</strong>: 마지막 Run이 성공했는지 실패했는지 색으로 표시됩니다.</li>
+</ul>
+<h3 id="52-grid">5.2 Grid 화면 (가장 많이 보는 화면)</h3>
+<p>DAG를 클릭하면 나오는 바둑판 모양 화면입니다.</p>
+<ul>
+<li><strong>세로 줄 하나 = Run 하나</strong> (오른쪽일수록 최근)</li>
+<li><strong>가로 줄 하나 = Task 하나</strong></li>
+<li><strong>칸 하나 = 그 Run에서 그 Task가 실행된 결과</strong></li>
+</ul>
+<p>칸의 색깔이 상태를 알려 줍니다.</p>
+<table>
+<thead>
+<tr>
+<th>색</th>
+<th>상태</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>초록</td>
+<td>success</td>
+<td>성공</td>
+</tr>
+<tr>
+<td>빨강</td>
+<td>failed</td>
+<td>실패 (재시도도 다 쓰고 최종 실패)</td>
+</tr>
+<tr>
+<td>연두</td>
+<td>running</td>
+<td>지금 실행 중</td>
+</tr>
+<tr>
+<td>회색</td>
+<td>queued / scheduled</td>
+<td>순서를 기다리는 중</td>
+</tr>
+<tr>
+<td>노랑</td>
+<td>up_for_retry</td>
+<td>실패해서 재시도를 기다리는 중</td>
+</tr>
+<tr>
+<td>주황</td>
+<td>upstream_failed</td>
+<td>앞 Task가 실패해서 시작조차 못 함</td>
+</tr>
+<tr>
+<td>분홍</td>
+<td>skipped</td>
+<td>조건에 따라 건너뜀</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>색상은 버전·테마에 따라 조금씩 다를 수 있습니다. 칸에 마우스를 올리면 상태 이름이 글자로 나오니 그걸 믿으세요.</p>
+</blockquote>
+<p><strong>주황(upstream_failed)을 보면 그 Task가 아니라 앞쪽의 빨간 칸을 찾으세요.</strong> 원인은 항상 빨간 칸에 있습니다.</p>
+<h3 id="53">5.3 로그 보기</h3>
+<ol>
+<li>Grid에서 보고 싶은 칸을 클릭합니다.</li>
+<li>오른쪽에 열리는 패널에서 <strong>Logs</strong> 탭을 엽니다.</li>
+<li>코드의 <code>print()</code> 출력과 에러 메시지가 여기 나옵니다.</li>
+</ol>
+<p>에러 로그는 보통 길게 출력됩니다. <strong>맨 아래에서 위로</strong> 읽으며 <code>Error</code> 또는 <code>Exception</code>이 들어간 첫 줄을 찾으면 대부분 원인이 거기 있습니다.</p>
+<p>연습 삼아 <code>count</code> 태스크에 <code>1 / 0</code>을 일부러 넣고 실행해 보세요. 빨간 칸, 주황 칸, <code>ZeroDivisionError</code> 로그를 한 번에 볼 수 있습니다.</p>
+<h2 id="6">6. 한 발짝 더: 자주 쓰는 세 가지</h2>
+<p>첫 DAG를 돌렸다면, 실무에서 바로 필요한 것은 이 세 가지입니다.</p>
+<h3 id="61-task">6.1 Task끼리 값 넘기기</h3>
+<p>앞 Task가 <code>return</code>한 값을 뒤 Task가 인자로 받을 수 있습니다. 이때는 <code>&gt;&gt;</code>를 쓸 필요 없이, 함수를 호출하듯 연결하면 순서도 자동으로 정해집니다.</p>
+<div class="code"><div class="lang">python</div><div class="hl"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">airflow.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">dag</span><span class="p">,</span> <span class="n">task</span>
+
+<span class="nd">@dag</span><span class="p">(</span><span class="n">dag_id</span><span class="o">=</span><span class="s2">"pass_values"</span><span class="p">,</span> <span class="n">schedule</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">pass_values</span><span class="p">():</span>
+
+    <span class="nd">@task</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_numbers</span><span class="p">():</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>          <span class="c1"># 이 값이 Airflow에 저장되어 다음 Task로 전달된다</span>
+
+    <span class="nd">@task</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_up</span><span class="p">(</span><span class="n">numbers</span><span class="p">):</span>          <span class="c1"># 앞 Task의 return 값이 numbers로 들어온다</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"합계: </span><span class="si">{</span><span class="n">total</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">total</span>
+
+    <span class="nd">@task</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">report</span><span class="p">(</span><span class="n">total</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"보고: 오늘 합계는 </span><span class="si">{</span><span class="n">total</span><span class="si">}</span><span class="s2">입니다"</span><span class="p">)</span>
+
+    <span class="c1"># get_numbers → add_up → report 순서로 실행되고, 값도 차례로 전달된다</span>
+    <span class="n">report</span><span class="p">(</span><span class="n">add_up</span><span class="p">(</span><span class="n">get_numbers</span><span class="p">()))</span>
+
+<span class="n">pass_values</span><span class="p">()</span>
+</pre></div>
+</div>
+<blockquote>
+<p>주의: 이렇게 넘기는 값은 Airflow의 데이터베이스에 저장됩니다(XCom이라고 부릅니다). 숫자, 짧은 문자열, 파일 경로 정도만 넘기세요. 수백 MB짜리 표를 통째로 넘기면 느려지고 고장납니다. 큰 데이터는 파일이나 테이블에 저장하고 <strong>그 위치만</strong> 넘깁니다.</p>
+</blockquote>
+<h3 id="62">6.2 매일 자동으로 실행하기</h3>
+<p><code>schedule</code>에 실행 주기를 적고, <code>start_date</code>로 언제부터 유효한지 정합니다.</p>
+<div class="code"><div class="lang">python</div><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pendulum</span>                       <span class="c1"># 시간대가 포함된 날짜를 만드는 라이브러리 (Airflow에 포함)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">airflow.sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">dag</span><span class="p">,</span> <span class="n">task</span>
+
+<span class="nd">@dag</span><span class="p">(</span>
+    <span class="n">dag_id</span><span class="o">=</span><span class="s2">"daily_hello"</span><span class="p">,</span>
+    <span class="n">schedule</span><span class="o">=</span><span class="s2">"0 9 * * *"</span><span class="p">,</span>            <span class="c1"># 매일 09:00 (아래 표 참고)</span>
+    <span class="n">start_date</span><span class="o">=</span><span class="n">pendulum</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="s2">"Asia/Seoul"</span><span class="p">),</span>  <span class="c1"># 한국 시간 기준</span>
+    <span class="n">catchup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>                    <span class="c1"># 지나간 날짜는 몰아서 실행하지 않음</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">daily_hello</span><span class="p">():</span>
+
+    <span class="nd">@task</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">greet</span><span class="p">(</span><span class="n">ds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># 인자 이름을 ds로 쓰면 Airflow가 이번 실행의 날짜('2026-09-22' 형식)를 넣어 준다</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">ds</span><span class="si">}</span><span class="s2"> 아침 인사"</span><span class="p">)</span>
+
+    <span class="n">greet</span><span class="p">()</span>
+
+<span class="n">daily_hello</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><code>schedule</code>에 들어가는 cron 표현식은 <code>분 시 일 월 요일</code> 다섯 칸입니다.</p>
+<table>
+<thead>
+<tr>
+<th>쓰고 싶은 것</th>
+<th>값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>매일 09:00</td>
+<td><code>"0 9 * * *"</code></td>
+</tr>
+<tr>
+<td>매시간 정각</td>
+<td><code>"0 * * * *"</code> 또는 <code>"@hourly"</code></td>
+</tr>
+<tr>
+<td>평일(월\~금) 18:30</td>
+<td><code>"30 18 * * 1-5"</code></td>
+</tr>
+<tr>
+<td>매월 1일 00:00</td>
+<td><code>"0 0 1 * *"</code> 또는 <code>"@monthly"</code></td>
+</tr>
+<tr>
+<td>자동 실행 안 함</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+<p>헷갈릴 때는 <a href="https://crontab.guru">crontab.guru</a>에서 표현식을 넣어 보면 우리말처럼 풀어 줍니다.</p>
+<p><strong>catchup이 뭔가요?</strong> <code>start_date</code>가 9월 1일이고 오늘이 9월 22일이면, catchup=True일 때 Airflow는 "밀린 21일치"를 한꺼번에 실행합니다. 초보 때는 항상 <code>catchup=False</code>로 두세요.</p>
+<h3 id="63">6.3 실패하면 다시 돌리기</h3>
+<p><strong>자동 재시도.</strong> 네트워크가 잠깐 끊기는 식의 일시적 실패는 잠시 후 다시 하면 대부분 성공합니다.</p>
+<div class="code"><div class="lang">python</div><div class="hl"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">timedelta</span>
+
+<span class="nd">@task</span><span class="p">(</span>
+    <span class="n">retries</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>                          <span class="c1"># 실패하면 최대 2번 더 시도 (총 3번)</span>
+    <span class="n">retry_delay</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>   <span class="c1"># 다시 시도하기 전에 1분 기다림</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fetch_data</span><span class="p">():</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p><strong>손으로 다시 돌리기 (Clear).</strong> 코드를 고친 뒤 실패한 부분만 다시 실행하는 방법입니다.</p>
+<ol>
+<li>Grid에서 빨간 칸을 클릭합니다.</li>
+<li><strong>Clear</strong> 버튼을 누릅니다. "이 칸을 아직 실행 안 한 상태로 되돌리기"라는 뜻입니다.</li>
+<li><strong>Downstream</strong> 옵션을 켜 두면 뒤따라오는 Task도 함께 다시 실행됩니다.</li>
+<li>확인을 누르면 Airflow가 그 칸부터 다시 실행합니다.</li>
+</ol>
+<p>Clear는 이미 성공한 앞쪽 Task를 다시 돌리지 않습니다. 그래서 오래 걸리는 앞 단계를 또 기다릴 필요가 없습니다.</p>
+<h2 id="7-7">7. 초보가 자주 하는 실수 7가지</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>증상</th>
+<th>원인</th>
+<th>해결</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>DAG가 화면에 안 나타남</td>
+<td>파일이 <code>dags/</code> 밖에 있거나, 맨 아래 DAG 함수 호출(<code>hello_airflow()</code>)을 빠뜨림</td>
+<td>파일 위치와 마지막 줄 확인. 1분 기다리기</td>
+</tr>
+<tr>
+<td>2</td>
+<td>빨간 Import Error</td>
+<td>문법 오류, 설치 안 된 라이브러리 import</td>
+<td><code>python dags/파일.py</code>로 먼저 실행해 보기</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Trigger를 눌렀는데 아무 일도 없음</td>
+<td>DAG가 일시정지(토글 꺼짐) 상태</td>
+<td>목록에서 토글 켜기</td>
+</tr>
+<tr>
+<td>4</td>
+<td>순서가 이상하거나 Task가 빠짐</td>
+<td><code>say_hello &gt;&gt; count</code>처럼 <code>()</code>를 빠뜨림</td>
+<td><code>say_hello() &gt;&gt; count()</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>스케줄 켜자마자 수십 개가 한꺼번에 실행됨</td>
+<td><code>catchup=True</code> + 오래전 <code>start_date</code></td>
+<td><code>catchup=False</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td>매번 같은 날짜 데이터만 처리됨 / 재실행하면 엉뚱한 날짜</td>
+<td>코드에서 <code>datetime.now()</code>로 날짜를 구함</td>
+<td>Airflow가 주는 <code>ds</code>를 사용</td>
+</tr>
+<tr>
+<td>7</td>
+<td>화면이 느려지고 DAG 반영이 늦음</td>
+<td>함수 <strong>밖</strong>(파일 맨 위)에서 DB 조회나 API 호출</td>
+<td>그런 코드는 모두 <code>@task</code> 함수 <strong>안</strong>으로</td>
+</tr>
+</tbody>
+</table>
+<p>7번은 이유를 알아두면 좋습니다. Airflow는 DAG 파일을 30초마다 다시 읽습니다. 파일 맨 위에 둔 코드는 그때마다 실행되지만, <code>@task</code> 함수 안의 코드는 <strong>실제로 그 Task가 실행될 때만</strong> 돌아갑니다.</p>
+<div class="code"><div class="lang">python</div><div class="hl"><pre><span></span><span class="c1"># 나쁜 예: 파일을 읽을 때마다(30초마다) API를 호출한다</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="n">items</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://example.com/items"</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+
+<span class="c1"># 좋은 예: Task가 실행될 때 한 번만 호출한다</span>
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">():</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://example.com/items"</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+</pre></div>
+</div>
+<h2 id="8">8. 다음 단계</h2>
+<p>여기까지 했다면 "DAG를 만들고, 돌리고, 실패를 찾고, 다시 돌린다"는 기본 사이클을 모두 경험한 것입니다. 이어서 볼 것을 순서대로 제안합니다.</p>
+<ul>
+<li>☐ <code>hello_airflow</code>를 고쳐 보기: Task를 하나 더 추가하고 순서를 바꿔 보기</li>
+<li>☐ 일부러 에러를 내고, 로그로 원인 찾고, Clear로 다시 돌려 보기</li>
+<li>☐ 내가 실제로 매일 하는 일 하나를 DAG로 옮겨 보기</li>
+<li>☐ 회사 Airflow에서 다른 사람이 만든 DAG 코드 읽어 보기 (화면의 Code 탭)</li>
+<li>☐ 익숙해지면 「Airflow 실무 개발자 매뉴얼」로 넘어가기</li>
+</ul>
+<p>참고 자료: <a href="https://airflow.apache.org/docs/apache-airflow/stable/tutorial/index.html">Airflow 공식 튜토리얼</a>, <a href="https://airflow.apache.org/docs/apache-airflow/stable/index.html">Airflow 공식 문서</a></p></main><div class="mermaidTooltip" style="opacity: 0; position: absolute; text-align: center; max-width: 200px; padding: 2px; font-size: 12px; background: rgb(255, 255, 222); border: 1px solid rgb(51, 51, 51); border-radius: 2px; pointer-events: none; z-index: 100;"></div></body></html>
